@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tilt — generous social vibes</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="tilt.css" />
+
+<style>
+  html, body {
+    height: 100%;
+    background: #EEE5D6;
+  }
+  .stage {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  /* paper backdrop */
+  .stage::before {
+    content: "";
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(at 20% 10%, #FFE3D4 0%, transparent 50%),
+      radial-gradient(at 80% 20%, #ECE3FF 0%, transparent 55%),
+      radial-gradient(at 50% 90%, #DEF5E4 0%, transparent 60%),
+      #EEE5D6;
+    z-index: -1;
+  }
+  /* Brand strip */
+  .brand-strip {
+    position: fixed;
+    top: 18px; left: 24px;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: -0.02em;
+    color: #2A1F1A;
+    display: flex; align-items: center; gap: 8px;
+    z-index: 5;
+  }
+  .brand-mark {
+    width: 24px; height: 24px;
+    background: #F08562;
+    border-radius: 8px;
+    transform: rotate(-12deg);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 14px; color: #FFF8EE;
+    box-shadow: 0 4px 10px rgba(240, 133, 98, 0.4);
+  }
+  .brand-tag {
+    position: fixed;
+    top: 22px; right: 24px;
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: #5C4B40;
+    z-index: 5;
+  }
+</style>
+</head>
+<body>
+
+<div class="brand-strip">
+  <span class="brand-mark">T</span>
+  <span>Tilt</span>
+</div>
+<div class="brand-tag">the wholesome anti-accounting app · prototype</div>
+
+<div class="stage">
+  <div id="root"></div>
+</div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="ios-frame.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="tilt-mascot.jsx"></script>
+<script type="text/babel" src="tilt-data.jsx"></script>
+<script type="text/babel" src="tilt-onboarding.jsx"></script>
+<script type="text/babel" src="tilt-home.jsx"></script>
+<script type="text/babel" src="tilt-log.jsx"></script>
+<script type="text/babel" src="tilt-screens-a.jsx"></script>
+<script type="text/babel" src="tilt-screens-b.jsx"></script>
+<script type="text/babel" src="tilt-app.jsx"></script>
+
+<script type="text/babel">
+  function Root() {
+    return (
+      <IOSDevice width={402} height={874}>
+        <App />
+      </IOSDevice>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(<Root />);
+</script>
+
+</body>
+</html>
