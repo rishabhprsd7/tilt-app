@@ -5,7 +5,7 @@ function GroupDetail({ groupId, nav }) {
   const g = GROUPS.find(x => x.id === groupId) || GROUPS[0];
   const members = g.members.map(id => findFriend(id));
   // demo tilts
-  const tiltMap = { alex: 50, jamie: 10, chris: -30, rae: -20, noor: 80, sam: 0 };
+  const tiltMap = DEMO_GROUP_MEMBER_STATES;
 
   const groupFeed = FEED.filter(f => f.group === g.id);
 
@@ -53,8 +53,8 @@ function GroupDetail({ groupId, nav }) {
         <div className="section-title">vibe board</div>
         <div className="card" style={{ padding: 16 }}>
           {members.map(m => {
-            const t = tiltMap[m.id] || 0;
-            const phrase = Math.abs(t) < 20 ? '✨ balanced' : t > 0 ? 'spoiled the group' : 'has been spoiled';
+            const t = tiltMap[m.id] || TILT_STATES.BALANCED;
+            const phrase = t === TILT_STATES.BALANCED ? '✨ balanced' : t.includes('theirs') ? 'has been generous lately' : 'has been treated lately';
             return (
               <div key={m.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: '1px solid var(--hairline)' }}>
                 <FriendAvatar name={m.name} color={m.color} size={36} />
@@ -62,7 +62,7 @@ function GroupDetail({ groupId, nav }) {
                   <div style={{ fontWeight: 700, fontSize: 14 }}>{m.name}</div>
                   <div style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 2 }}>{phrase}</div>
                 </div>
-                <GroupTiltBar tilt={t} />
+                <GroupTiltBar state={t} />
               </div>
             );
           })}
@@ -97,17 +97,18 @@ function GroupDetail({ groupId, nav }) {
   );
 }
 
-function GroupTiltBar({ tilt }) {
-  const mag = Math.min(Math.abs(tilt) / 100, 1);
-  const towardThem = tilt > 0;
+function GroupTiltBar({ state }) {
+  const s = state || TILT_STATES.BALANCED;
+  const isTheirs = s.includes('theirs');
+  const barWidth = TILT_BAR_WIDTHS[s] || 0;
   return (
     <div style={{ width: 76, height: 6, background: 'var(--bg)', borderRadius: 999, position: 'relative', overflow: 'hidden' }}>
       <div style={{
         position: 'absolute',
-        left: towardThem ? '50%' : `${50 - mag * 50}%`,
-        width: `${mag * 50}%`,
+        left: isTheirs ? '50%' : `${(0.5 - barWidth * 0.5) * 100}%`,
+        width: `${barWidth * 50}%`,
         top: 0, bottom: 0,
-        background: towardThem ? 'var(--peach-deep)' : 'var(--lavender-deep)',
+        background: isTheirs ? 'var(--peach-deep)' : 'var(--lavender-deep)',
         borderRadius: 999,
       }} />
       <div style={{ position: 'absolute', left: '50%', top: -1, bottom: -1, width: 1.5, background: 'rgba(0,0,0,0.2)' }} />
@@ -119,11 +120,10 @@ function GroupTiltBar({ tilt }) {
 function FriendDetail({ friendId, nav }) {
   const f = findFriend(friendId);
   const personality = findPersonality(f.personality);
-  const tilts = { alex: 70, jamie: -40, chris: 10, rae: -10, sam: 20, noor: 90 };
-  const t = tilts[f.id] || 0;
-  const [phrase] = vibePhrase(t, f.name);
-  const mag = Math.min(Math.abs(t) / 150, 1);
-  const towardThem = t > 0;
+  const state = DEMO_FRIEND_STATES[f.id] || TILT_STATES.BALANCED;
+  const [phrase] = getVibePhrase(state, f.name);
+  const barWidth = TILT_BAR_WIDTHS[state] || 0;
+  const towardThem = state.includes('theirs');
 
   return (
     <div className="tilt-screen" style={{ padding: 0 }}>
@@ -159,8 +159,8 @@ function FriendDetail({ friendId, nav }) {
           }}>
             <div style={{
               position: 'absolute',
-              left: towardThem ? '50%' : `${50 - mag * 50}%`,
-              width: `${mag * 50}%`,
+              left: towardThem ? '50%' : `${(0.5 - barWidth * 0.5) * 100}%`,
+              width: `${barWidth * 50}%`,
               top: 0, bottom: 0,
               background: towardThem ? 'linear-gradient(90deg, var(--peach), var(--peach-deep))' : 'linear-gradient(90deg, var(--lavender-deep), var(--lavender))',
               borderRadius: 999,
@@ -177,13 +177,13 @@ function FriendDetail({ friendId, nav }) {
         <div className="card" style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 14, padding: 16 }}>
           <div style={{
             width: 52, height: 52, borderRadius: 16,
-            background: 'var(--sunshine-soft)',
+            background: 'var(--mint-soft)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: 28,
-          }}>🔥</div>
+          }}>🌱</div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18 }}>12 week streak</div>
-            <div style={{ fontSize: 12, color: 'var(--ink-3)' }}>you've spoiled each other for 12 weeks straight</div>
+            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18 }}>been treating each other</div>
+            <div style={{ fontSize: 12, color: 'var(--ink-3)' }}>a nice rhythm together for about 3 months</div>
           </div>
         </div>
 
@@ -203,7 +203,7 @@ function MascotScreen({ nav }) {
 
   const stats = [
     { label: 'affection', value: 78, color: 'var(--peach-deep)', emoji: '💛' },
-    { label: 'streak', value: 92, color: 'var(--sunshine-deep)', emoji: '🔥' },
+    { label: 'rhythm', value: 78, color: 'var(--mint-deep)', emoji: '🌱' },
     { label: 'squad vibes', value: 64, color: 'var(--mint-deep)', emoji: '✨' },
   ];
 

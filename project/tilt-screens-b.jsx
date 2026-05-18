@@ -120,23 +120,20 @@ function RecapScreen({ nav }) {
       bg: 'linear-gradient(160deg, #B9E8C6 0%, #DEF5E4 100%)',
       content: (
         <>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: 16 }}>
-            {['🥇','🥈','🥉'].map((m, i) => (
-              <div key={i} style={{ width: 56, height: 56, borderRadius: 28, background: 'rgba(255,255,255,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28 }}>{m}</div>
-            ))}
-          </div>
-          <div className="t-display" style={{ fontSize: 28, textAlign: 'center' }}>biggest treat energy</div>
-          <div style={{ marginTop: 18 }}>
+          <div className="t-display" style={{ fontSize: 28, textAlign: 'center' }}>everyone showed up</div>
+          <div className="t-serif" style={{ fontSize: 18, textAlign: 'center', color: 'var(--ink-2)', marginTop: 6 }}>in their own way 💛</div>
+          <div style={{ marginTop: 20 }}>
             {[
-              { who: 'Chris', mood: '🐻', n: 312 },
-              { who: 'You',   mood: '🍪', n: 248 },
-              { who: 'Noor',  mood: '🌴', n: 206 },
-            ].map((row, i) => (
+              { who: 'Chris', mood: '🐻', story: 'surprised the group twice this month' },
+              { who: 'You',   mood: '🍪', story: 'kept the small treats flowing all month' },
+              { who: 'Noor',  mood: '🌴', story: 'went big on the Lisbon trip' },
+            ].map((row) => (
               <div key={row.who} style={{ background: 'rgba(255,255,255,0.5)', borderRadius: 14, padding: 12, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ width: 24, fontWeight: 700, fontFamily: 'var(--font-display)' }}>#{i + 1}</div>
                 <div style={{ fontSize: 28 }}>{row.mood}</div>
-                <div style={{ flex: 1, fontWeight: 700 }}>{row.who}</div>
-                <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700 }}>+{row.n}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 700 }}>{row.who}</div>
+                  <div style={{ fontSize: 12, color: 'var(--ink-2)', marginTop: 2 }}>{row.story}</div>
+                </div>
               </div>
             ))}
           </div>
@@ -152,7 +149,7 @@ function RecapScreen({ nav }) {
           <div style={{ marginTop: 24, padding: 16, background: 'rgba(255,255,255,0.5)', borderRadius: 18, fontSize: 14, lineHeight: 1.5 }}>
             4 emergency taxi missions, 2 kebab rescues, and one mysterious "ice cream at 2am" event.
           </div>
-          <div className="t-serif" style={{ fontSize: 22, textAlign: 'center', marginTop: 18, color: 'var(--ink-2)' }}>maybe spoil them back?</div>
+          <div className="t-serif" style={{ fontSize: 22, textAlign: 'center', marginTop: 18, color: 'var(--ink-2)' }}>a good moment to treat them 🍜</div>
         </>
       ),
     },
@@ -225,13 +222,13 @@ function RecapScreen({ nav }) {
 // ── Notifications ───────────────────────────────────────────
 function NotificationsScreen({ nav }) {
   const items = [
-    { id: 1, when: '2h', emoji: '🍝', title: 'Alex spread +50 🍝', sub: 'you, Jamie & Chris just got spoiled' },
+    { id: 1, when: '2h', emoji: '🍝', title: 'Alex spread a treat 🍝', sub: 'you, Jamie & Chris were included' },
     { id: 2, when: '6h', emoji: '🦝', title: 'Jamie has entered generous goblin mode', sub: '+20s flying in every direction', mascot: true },
-    { id: 3, when: 'yest', emoji: '🌙', title: "we miss the squad energy 🥺", sub: 'Lisbon trip has been quiet for 3 days', mascot: true },
+    { id: 3, when: 'yest', emoji: '🌙', title: "the Lisbon crew has been cozy lately ✨", sub: "anyone got treat energy? no pressure", mascot: true },
     { id: 4, when: 'yest', emoji: '💛', title: 'Sam liked your 3am kebab rescue', sub: '"actually iconic"' },
     { id: 5, when: '2d', emoji: '🍪', title: "tiny treat dealer in action", sub: 'you spread 7 +10s this week. iconic move' },
     { id: 6, when: '3d', emoji: '🍕', title: "Balance vibes are returning ✨", sub: 'Roomies group has rebalanced naturally' },
-    { id: 7, when: '5d', emoji: '🍜', title: "okay okay someone buy Alex a snack already", sub: 'Til is dramatic on your behalf', mascot: true },
+    { id: 7, when: '5d', emoji: '🍜', title: "Alex has been carrying the group lately 💛", sub: "maybe a small treat their way? Til thinks so", mascot: true },
   ];
 
   return (
@@ -278,9 +275,8 @@ function FriendsScreen({ nav }) {
       </div>
       <div style={{ padding: '0 20px', display: 'flex', flexDirection: 'column', gap: 10 }}>
         {FRIENDS.map(f => {
-          const tilts = { alex: 70, jamie: -40, chris: 10, rae: -10, sam: 20, noor: 90 };
-          const t = tilts[f.id] || 0;
-          const [phrase] = vibePhrase(t, f.name);
+          const state = DEMO_FRIEND_STATES[f.id] || TILT_STATES.BALANCED;
+          const [phrase] = getVibePhrase(state, f.name);
           const p = findPersonality(f.personality);
           return (
             <button key={f.id} onClick={() => nav('friend', f.id)} style={{

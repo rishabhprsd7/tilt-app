@@ -1,9 +1,7 @@
 // Tilt — Home screen (feed + your tilt status + mascot whisper)
 
 function Home({ nav, tone }) {
-  const tiltAmount = 80; // demo: you're slightly tilted toward Alex
-  const towardName = 'Alex';
-  const [whisper, whisperBg] = vibePhrase(tiltAmount, towardName);
+  const [whisper] = getVibePhrase(DEMO_FRIEND_STATES.alex || TILT_STATES.THEIRS, 'Alex');
   const [thanked, setThanked] = React.useState(false);
 
   return (
@@ -102,12 +100,14 @@ function Home({ nav, tone }) {
 }
 
 function FriendTilt({ friend, nav }) {
-  // demo: a deterministic tilt per friend
-  const tilts = { alex: 70, jamie: -40, chris: 10, rae: -10, sam: 20, noor: 90 };
-  const t = tilts[friend.id] || 0;
-  const towardMe = t < 0;
-  const mag = Math.min(Math.abs(t) / 150, 1);
-  const label = Math.abs(t) < 20 ? 'balanced ✨' : towardMe ? 'spoil them' : 'they spoiled you';
+  const state = DEMO_FRIEND_STATES[friend.id] || TILT_STATES.BALANCED;
+  const isTheirs = state.includes('theirs');
+  const barWidth = TILT_BAR_WIDTHS[state] || 0;
+  const label = state === TILT_STATES.BALANCED
+    ? 'balanced ✨'
+    : isTheirs
+    ? "they've been generous"
+    : "you've been generous";
   return (
     <button onClick={() => nav('friend', friend.id)} style={{
       flexShrink: 0,
@@ -120,14 +120,14 @@ function FriendTilt({ friend, nav }) {
     }}>
       <FriendAvatar name={friend.name} color={friend.color} size={44} />
       <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 16 }}>{friend.name}</div>
-      {/* Mini tilt indicator */}
+      {/* Mini tilt indicator — state-based width, no raw numbers */}
       <div style={{ width: '100%', height: 6, background: 'var(--bg)', borderRadius: 999, position: 'relative', overflow: 'hidden' }}>
         <div style={{
           position: 'absolute',
-          left: towardMe ? `${50 - mag * 50}%` : '50%',
-          width: `${mag * 50}%`,
+          left: isTheirs ? '50%' : `${(0.5 - barWidth * 0.5) * 100}%`,
+          width: `${barWidth * 50}%`,
           top: 0, bottom: 0,
-          background: towardMe ? 'var(--lavender-deep)' : 'var(--peach-deep)',
+          background: isTheirs ? 'var(--lavender-deep)' : 'var(--peach-deep)',
           borderRadius: 999,
         }} />
         <div style={{
@@ -232,8 +232,8 @@ function SpoiledCard({ thanked, setThanked }) {
           flexShrink: 0,
         }}>🍣</div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ink-3)', marginBottom: 2 }}>you've been spoiled</div>
-          <div style={{ fontSize: 15, fontWeight: 700, lineHeight: 1.25, color: 'var(--ink)' }}>Noor sent +130 🍣 your way</div>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ink-3)', marginBottom: 2 }}>noor treated you 💛</div>
+          <div style={{ fontSize: 15, fontWeight: 700, lineHeight: 1.25, color: 'var(--ink)' }}>Noor treated you to sushi 🍣</div>
           <div style={{ fontSize: 12, color: 'var(--ink-2)', marginTop: 2 }}>"post-breakup sushi mission" — 1h ago</div>
         </div>
       </div>
@@ -257,7 +257,7 @@ function SpoiledCard({ thanked, setThanked }) {
           backdropFilter: 'blur(10px)',
           color: 'var(--ink)',
           fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: 14,
-        }}>spoil back</button>
+        }}>treat them too 🍜</button>
         {bursts.map(b => (
           <span key={b.id} style={{
             position: 'absolute', bottom: 40, left: b.x,

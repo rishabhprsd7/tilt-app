@@ -112,7 +112,7 @@ function LogTreat({ onClose, onLog, tone }) {
 
         {/* Friends */}
         <div className="section-title" style={{ marginTop: 22 }}>
-          spoiling · {selected.length} {selected.length === 1 ? 'friend' : 'friends'}
+          treating · {selected.length} {selected.length === 1 ? 'friend' : 'friends'}
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {FRIENDS.map(f => (
@@ -186,7 +186,7 @@ function Celebration({ level, emoji, count }) {
         the squad will remember this 💛
       </div>
       <div style={{ marginTop: 20, padding: '10px 16px', background: 'rgba(255,255,255,0.6)', borderRadius: 999, backdropFilter: 'blur(10px)' }}>
-        <span style={{ fontSize: 13, fontWeight: 600 }}>spoiling {count} {count === 1 ? 'friend' : 'friends'}</span>
+        <span style={{ fontSize: 13, fontWeight: 600 }}>treating {count} {count === 1 ? 'friend' : 'friends'}</span>
       </div>
     </div>
   );
