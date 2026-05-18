@@ -1,0 +1,3456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tilt — generous social vibes</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+
+
+<style>
+<style>
+/* Tilt — design tokens + global styles */
+
+:root {
+  /* Type */
+  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+
+  /* Cream paper base */
+  --bg: #FAF4EC;
+  --bg-card: #FFFFFF;
+  --bg-elev: #FFFDF8;
+  --ink: #2A1F1A;
+  --ink-2: #5C4B40;
+  --ink-3: #9C8A7E;
+  --hairline: rgba(42, 31, 26, 0.08);
+  --hairline-2: rgba(42, 31, 26, 0.14);
+
+  /* Pastel-meets-dopamine palette */
+  --peach: #FFB59A;       /* primary warm */
+  --peach-deep: #F08562;
+  --peach-soft: #FFE3D4;
+  --mint: #B9E8C6;
+  --mint-deep: #4FB077;
+  --mint-soft: #DEF5E4;
+  --lavender: #C9B8F0;
+  --lavender-deep: #8B6FD9;
+  --lavender-soft: #ECE3FF;
+  --sunshine: #FFD66B;
+  --sunshine-deep: #E8A93B;
+  --sunshine-soft: #FFF1C9;
+  --berry: #F49AC2;
+  --berry-deep: #D9568F;
+  --berry-soft: #FCD9E8;
+  --sky: #A8D9F0;
+  --sky-deep: #4A99C9;
+
+  /* Tints used as bg moments */
+  --celebrate: linear-gradient(135deg, #FFD66B 0%, #FFB59A 50%, #F49AC2 100%);
+  --calm: linear-gradient(160deg, #DEF5E4 0%, #ECE3FF 100%);
+  --warm: linear-gradient(160deg, #FFE3D4 0%, #FFF1C9 100%);
+
+  /* Shadow */
+  --shadow-1: 0 1px 0 rgba(42, 31, 26, 0.04), 0 1px 3px rgba(42, 31, 26, 0.06);
+  --shadow-2: 0 4px 14px rgba(42, 31, 26, 0.08), 0 1px 4px rgba(42, 31, 26, 0.04);
+  --shadow-pop: 0 12px 32px rgba(240, 133, 98, 0.28), 0 4px 12px rgba(42, 31, 26, 0.08);
+
+  /* Radii */
+  --r-sm: 12px;
+  --r: 18px;
+  --r-lg: 24px;
+  --r-xl: 32px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: #EEE5D6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ── Type utilities ─────────────────────────────────────────── */
+.t-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+}
+.t-serif {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  font-style: italic;
+}
+.t-body { font-family: var(--font-body); }
+.t-mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+
+/* ── App screen container inside iOS frame ──────────────────── */
+.tilt-screen {
+  width: 100%;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  position: relative;
+  padding-top: 64px; /* below status bar/island */
+  padding-bottom: 110px; /* above tab bar */
+}
+.tilt-screen.no-tabs { padding-bottom: 40px; }
+.tilt-screen.no-status { padding-top: 0; }
+
+/* Buttons */
+.btn {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 16px;
+  border: none;
+  border-radius: 999px;
+  padding: 16px 22px;
+  cursor: pointer;
+  transition: transform 0.15s cubic-bezier(.34,1.56,.64,1), box-shadow 0.15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--ink);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-2);
+}
+.btn:active { transform: scale(0.96); }
+.btn-primary {
+  background: var(--ink);
+  color: #FFF8EE;
+  box-shadow: 0 6px 18px rgba(42, 31, 26, 0.18);
+}
+.btn-peach {
+  background: var(--peach-deep);
+  color: white;
+  box-shadow: var(--shadow-pop);
+}
+.btn-block { width: 100%; padding: 18px 22px; font-size: 17px; }
+
+/* Cards */
+.card {
+  background: var(--bg-card);
+  border-radius: var(--r-lg);
+  padding: 18px;
+  box-shadow: var(--shadow-1);
+}
+
+/* Chips / tags */
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--bg-card);
+  color: var(--ink-2);
+}
+
+/* Treat amount pill */
+.treat-pill {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  display: inline-flex; align-items: center; gap: 6px;
+  letter-spacing: -0.01em;
+}
+
+/* Section title */
+.section-title {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 4px 0 10px;
+}
+
+/* Tab bar (custom, sits above home indicator) */
+.tab-bar {
+  position: absolute;
+  bottom: 24px; left: 14px; right: 14px;
+  height: 68px;
+  background: rgba(255, 253, 248, 0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(42, 31, 26, 0.06);
+  border-radius: 28px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  box-shadow: 0 12px 28px rgba(42, 31, 26, 0.10), 0 2px 6px rgba(42, 31, 26, 0.04);
+  z-index: 40;
+}
+.tab-item {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px;
+  border: none; background: transparent;
+  color: var(--ink-3);
+  font-family: var(--font-body); font-size: 10px; font-weight: 600;
+  cursor: pointer;
+  transition: color 0.15s, transform 0.2s cubic-bezier(.34,1.56,.64,1);
+}
+.tab-item.active { color: var(--ink); }
+.tab-item .glyph { font-size: 22px; line-height: 1; }
+.tab-item.fab {
+  background: var(--ink);
+  color: #FFF8EE;
+  border-radius: 22px;
+  margin: 10px;
+  box-shadow: 0 8px 18px rgba(42, 31, 26, 0.25);
+}
+.tab-item.fab .glyph { font-size: 28px; font-weight: 300; }
+
+/* Mascot */
+.mascot-stage {
+  position: relative;
+  width: 140px; height: 140px;
+  display: flex; align-items: center; justify-content: center;
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50%      { transform: translateY(-6px) rotate(2deg); }
+}
+@keyframes blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-6deg); }
+  50% { transform: rotate(6deg); }
+}
+@keyframes pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  60% { transform: scale(1.06); opacity: 1; }
+  100% { transform: scale(1); }
+}
+@keyframes float-up {
+  0% { transform: translateY(0); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translateY(-60px); opacity: 0; }
+}
+@keyframes shimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+@keyframes tilt {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+
+.mascot { animation: bob 4s ease-in-out infinite; transform-origin: 50% 80%; }
+
+/* Screen transitions */
+.screen-in {
+  animation: screen-fade 0.32s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes screen-fade {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Confetti dots */
+.dot {
+  position: absolute;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  animation: float-up 1.6s ease-out forwards;
+}
+
+/* Scrollable area inside screen */
+.scroll {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+.scroll::-webkit-scrollbar { display: none; }
+.scroll { scrollbar-width: none; }
+
+/* Avatar */
+.avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--ink);
+  flex-shrink: 0;
+}
+
+/* Vibe bar */
+.vibe-bar {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--peach-soft);
+  position: relative;
+  overflow: hidden;
+}
+.vibe-bar > .fill {
+  position: absolute; top: 0; bottom: 0; left: 0;
+  background: var(--peach-deep);
+  border-radius: 999px;
+  transition: width 0.7s cubic-bezier(.34,1.56,.64,1);
+}
+
+/* Sparkle decoration */
+.sparkle {
+  position: absolute;
+  pointer-events: none;
+  animation: wiggle 2.4s ease-in-out infinite;
+}
+
+/* No tap highlight */
+button { -webkit-tap-highlight-color: transparent; }
+</style>
+<style>
+  html, body {
+    height: 100%;
+    background: #EEE5D6;
+  }
+  .stage {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  /* paper backdrop */
+  .stage::before {
+    content: "";
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(at 20% 10%, #FFE3D4 0%, transparent 50%),
+      radial-gradient(at 80% 20%, #ECE3FF 0%, transparent 55%),
+      radial-gradient(at 50% 90%, #DEF5E4 0%, transparent 60%),
+      #EEE5D6;
+    z-index: -1;
+  }
+  /* Brand strip */
+  .brand-strip {
+    position: fixed;
+    top: 18px; left: 24px;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: -0.02em;
+    color: #2A1F1A;
+    display: flex; align-items: center; gap: 8px;
+    z-index: 5;
+  }
+  .brand-mark {
+    width: 24px; height: 24px;
+    background: #F08562;
+    border-radius: 8px;
+    transform: rotate(-12deg);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 14px; color: #FFF8EE;
+    box-shadow: 0 4px 10px rgba(240, 133, 98, 0.4);
+  }
+  .brand-tag {
+    position: fixed;
+    top: 22px; right: 24px;
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: #5C4B40;
+    z-index: 5;
+  }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script>
+// tilt-guardrails.js
+// Code-level product safety guardrails for Tilt.
+//
+// These run at page load and during development to catch philosophy violations
+// before they reach users. Think of this as a linter for product ethics.
+//
+// Usage: include this file after tilt-data.jsx, before any screen components.
+
+(function runTiltGuardrails() {
+  'use strict';
+
+  // ── Banned vocabulary ───────────────────────────────────────────
+  // These terms must never appear in user-facing copy (notifications,
+  // labels, cards, buttons, phrases). Check against this list when
+  // writing new copy or reviewing PRs.
+  const BANNED_TERMS = [
+    // Debt framing
+    'owe', 'owes', 'owed',
+    'debt', 'debts',
+    'settle', 'settlement',
+    'unpaid', 'outstanding', 'overdue',
+    'balance due', 'pay back', 'pay me back',
+    // Accusatory / guilting
+    'you haven\'t', 'you didn\'t',
+    'it\'s been X days', // dynamic version — catch in review
+    // Transactional framing
+    'split', 'splitting', 'split the bill',
+    'fair share', 'your share',
+    'reimburs',
+    // Explicit ranking language
+    'biggest giver', 'most generous', 'least generous',
+    '#1', '#2', '#3',  // ranking positions in generosity context
+  ];
+
+  // Notification/copy strings to audit against BANNED_TERMS.
+  // Add new copy strings here as they're created.
+  const AUDITABLE_COPY = [
+    // vibePhrase outputs
+    ...(typeof VIBE_PHRASES !== 'undefined' ? Object.values(VIBE_PHRASES).flat() : []),
+    // Notification titles / subs should be added here too
+  ];
+
+  function checkCopyForBannedTerms(copyStrings, context) {
+    const violations = [];
+    for (const copy of copyStrings) {
+      const lower = copy.toLowerCase();
+      for (const term of BANNED_TERMS) {
+        if (lower.includes(term.toLowerCase())) {
+          violations.push({ copy, term, context });
+        }
+      }
+    }
+    return violations;
+  }
+
+  // ── Treat level validation ──────────────────────────────────────
+  // Ensures only symbolic treat levels are used. Any arbitrary number
+  // (e.g. exact expense amounts) is rejected.
+  function assertValidTreatLevels() {
+    if (typeof TREAT_LEVELS === 'undefined') {
+      console.error('[Tilt] TREAT_LEVELS not found. tilt-data.jsx must load first.');
+      return;
+    }
+    // Levels should be positive integers, not round hundreds (avoids euro/dollar equivalents)
+    const hasRoundHundreds = TREAT_LEVELS.filter(l => l > 10 && l % 100 === 0 && l <= 300);
+    // Some round-hundreds are OK (100, 200, 300) but they should be mixed with
+    // irregular values to prevent 1:1 currency mapping
+    const hasIrregularValues = TREAT_LEVELS.some(l => ![10,20,30,40,50,60,70,80,90,100,150,200,250,300].includes(l));
+    if (!hasIrregularValues) {
+      console.warn('[Tilt guardrail] TREAT_LEVELS looks too regular — add fuzzy values like 75, 130, 225 to prevent currency mapping.');
+    }
+    // No negative values
+    if (TREAT_LEVELS.some(l => l <= 0)) {
+      console.error('[Tilt guardrail] TREAT_LEVELS contains non-positive values. All treat levels must be positive.');
+    }
+    console.log('[Tilt guardrail ✓] TREAT_LEVELS validated:', TREAT_LEVELS.length, 'levels');
+  }
+
+  // ── Tilt state completeness ─────────────────────────────────────
+  // Every TILT_STATE must have an entry in TILT_BAR_WIDTHS and VIBE_PHRASES.
+  function assertTiltStateCompleteness() {
+    if (typeof TILT_STATES === 'undefined') return;
+    const states = Object.values(TILT_STATES);
+
+    if (typeof TILT_BAR_WIDTHS !== 'undefined') {
+      const missingWidths = states.filter(s => TILT_BAR_WIDTHS[s] === undefined);
+      if (missingWidths.length > 0) {
+        console.error('[Tilt guardrail] TILT_BAR_WIDTHS missing states:', missingWidths);
+      } else {
+        console.log('[Tilt guardrail ✓] All tilt states have bar widths.');
+      }
+    }
+
+    if (typeof VIBE_PHRASES !== 'undefined') {
+      const missingPhrases = states.filter(s => !VIBE_PHRASES[s] || VIBE_PHRASES[s].length === 0);
+      if (missingPhrases.length > 0) {
+        console.error('[Tilt guardrail] VIBE_PHRASES missing states:', missingPhrases);
+      } else {
+        console.log('[Tilt guardrail ✓] All tilt states have vibe phrases.');
+      }
+    }
+  }
+
+  // ── Vibe phrase quality checks ──────────────────────────────────
+  function assertVibePhraseQuality() {
+    if (typeof VIBE_PHRASES === 'undefined') return;
+    let passed = 0;
+    let failed = 0;
+
+    for (const [state, phrases] of Object.entries(VIBE_PHRASES)) {
+      for (const phrase of phrases) {
+        const lower = phrase.toLowerCase();
+        const violations = BANNED_TERMS.filter(t => lower.includes(t.toLowerCase()));
+        if (violations.length > 0) {
+          console.error(`[Tilt guardrail] Banned term "${violations[0]}" found in phrase: "${phrase}" (state: ${state})`);
+          failed++;
+        } else {
+          passed++;
+        }
+      }
+    }
+    if (failed === 0) {
+      console.log(`[Tilt guardrail ✓] Vibe phrases clean (${passed} phrases checked).`);
+    }
+  }
+
+  // ── Decay model sanity ──────────────────────────────────────────
+  function assertDecayModelSanity() {
+    if (typeof DECAY_TIERS === 'undefined' || typeof getDecayWeight === 'undefined') return;
+
+    // Weights must decrease with age
+    for (let i = 1; i < DECAY_TIERS.length; i++) {
+      if (DECAY_TIERS[i].weight >= DECAY_TIERS[i - 1].weight) {
+        console.error('[Tilt guardrail] DECAY_TIERS weights must be strictly decreasing with age.');
+        return;
+      }
+    }
+    // Weight at day 0 must be 1.0 (full weight for today's entry)
+    if (getDecayWeight(0) !== 1.0) {
+      console.error('[Tilt guardrail] getDecayWeight(0) must return 1.0.');
+      return;
+    }
+    // Weight at day 91 must be 0 (entries older than 90 days fade completely)
+    if (getDecayWeight(91) !== 0) {
+      console.error('[Tilt guardrail] getDecayWeight(91) must return 0 — entries > 90 days should fully fade.');
+      return;
+    }
+    console.log('[Tilt guardrail ✓] Decay model is monotone and soft-resets after 90 days.');
+  }
+
+  // ── Participant scope enforcement ───────────────────────────────
+  // Test: ensure computeTiltScore only affects selected participants.
+  function assertParticipantScopeIsolation() {
+    if (typeof computeTiltScore === 'undefined') return;
+
+    const entries = [
+      { id: 'e1', who: 'alice', level: 50, daysAgo: 1, selected: ['bob'] },
+    ];
+
+    // bob should be affected (selected)
+    const scoreBob = computeTiltScore(entries, 'alice', 'bob');
+    if (scoreBob >= 0) {
+      console.error('[Tilt guardrail] alice treated bob — score for bob should be negative (alice was generous to bob, so from alice\'s perspective, score vs bob should shift).');
+    }
+
+    // carol should NOT be affected (not selected)
+    const scoreCarol = computeTiltScore(entries, 'alice', 'carol');
+    if (scoreCarol !== 0) {
+      console.error('[Tilt guardrail] Participant scope violation! carol was not selected but tilt changed:', scoreCarol);
+    } else {
+      console.log('[Tilt guardrail ✓] Participant scope isolated — unselected members unaffected.');
+    }
+  }
+
+  // ── No leaderboard outputs ──────────────────────────────────────
+  // The scoreToState function must never produce rankings.
+  // All state outputs should be individual, not comparative.
+  function assertNoLeaderboardOutput() {
+    if (typeof scoreToState === 'undefined') return;
+    // scoreToState takes a single number and returns a state string
+    // It should never take an array or produce sorted/ranked output
+    const testCases = [100, 50, 20, 5, -5, -20, -50, -100];
+    const states = testCases.map(n => scoreToState(n));
+    // All should be valid TILT_STATES values
+    const validStates = Object.values(TILT_STATES);
+    const invalid = states.filter(s => !validStates.includes(s));
+    if (invalid.length > 0) {
+      console.error('[Tilt guardrail] scoreToState produced invalid state(s):', invalid);
+    } else {
+      console.log('[Tilt guardrail ✓] All scoreToState outputs are valid TILT_STATES values.');
+    }
+  }
+
+  // ── Run all checks ──────────────────────────────────────────────
+  function runAll() {
+    console.group('[Tilt product guardrails]');
+    assertValidTreatLevels();
+    assertTiltStateCompleteness();
+    assertVibePhraseQuality();
+    assertDecayModelSanity();
+    assertParticipantScopeIsolation();
+    assertNoLeaderboardOutput();
+    console.groupEnd();
+  }
+
+  // Run after all scripts have loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', runAll);
+  } else {
+    // Already loaded (Babel deferred execution)
+    setTimeout(runAll, 0);
+  }
+
+  // Expose for manual re-runs in console during development
+  window.__tiltGuardrails = { runAll, checkCopyForBannedTerms, BANNED_TERMS };
+})();
+</script>
+
+<script type="text/babel">
+
+// iOS.jsx — Simplified iOS 26 (Liquid Glass) device frame
+// Based on the iOS 26 UI Kit + Figma status bar spec. No assets, no deps.
+// Exports: IOSDevice, IOSStatusBar, IOSNavBar, IOSGlassPill, IOSList, IOSListRow, IOSKeyboard
+
+// ─────────────────────────────────────────────────────────────
+// Status bar
+// ─────────────────────────────────────────────────────────────
+function IOSStatusBar({ dark = false, time = '9:41' }) {
+  const c = dark ? '#fff' : '#000';
+  return (
+    <div style={{
+      display: 'flex', gap: 154, alignItems: 'center', justifyContent: 'center',
+      padding: '21px 24px 19px', boxSizing: 'border-box',
+      position: 'relative', zIndex: 20, width: '100%',
+    }}>
+      <div style={{ flex: 1, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: 1.5 }}>
+        <span style={{
+          fontFamily: '-apple-system, "SF Pro", system-ui', fontWeight: 590,
+          fontSize: 17, lineHeight: '22px', color: c,
+        }}>{time}</span>
+      </div>
+      <div style={{ flex: 1, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, paddingTop: 1, paddingRight: 1 }}>
+        <svg width="19" height="12" viewBox="0 0 19 12">
+          <rect x="0" y="7.5" width="3.2" height="4.5" rx="0.7" fill={c}/>
+          <rect x="4.8" y="5" width="3.2" height="7" rx="0.7" fill={c}/>
+          <rect x="9.6" y="2.5" width="3.2" height="9.5" rx="0.7" fill={c}/>
+          <rect x="14.4" y="0" width="3.2" height="12" rx="0.7" fill={c}/>
+        </svg>
+        <svg width="17" height="12" viewBox="0 0 17 12">
+          <path d="M8.5 3.2C10.8 3.2 12.9 4.1 14.4 5.6L15.5 4.5C13.7 2.7 11.2 1.5 8.5 1.5C5.8 1.5 3.3 2.7 1.5 4.5L2.6 5.6C4.1 4.1 6.2 3.2 8.5 3.2Z" fill={c}/>
+          <path d="M8.5 6.8C9.9 6.8 11.1 7.3 12 8.2L13.1 7.1C11.8 5.9 10.2 5.1 8.5 5.1C6.8 5.1 5.2 5.9 3.9 7.1L5 8.2C5.9 7.3 7.1 6.8 8.5 6.8Z" fill={c}/>
+          <circle cx="8.5" cy="10.5" r="1.5" fill={c}/>
+        </svg>
+        <svg width="27" height="13" viewBox="0 0 27 13">
+          <rect x="0.5" y="0.5" width="23" height="12" rx="3.5" stroke={c} strokeOpacity="0.35" fill="none"/>
+          <rect x="2" y="2" width="20" height="9" rx="2" fill={c}/>
+          <path d="M25 4.5V8.5C25.8 8.2 26.5 7.2 26.5 6.5C26.5 5.8 25.8 4.8 25 4.5Z" fill={c} fillOpacity="0.4"/>
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Liquid glass pill — blur + tint + shine
+// ─────────────────────────────────────────────────────────────
+function IOSGlassPill({ children, dark = false, style = {} }) {
+  return (
+    <div style={{
+      height: 44, minWidth: 44, borderRadius: 9999,
+      position: 'relative', overflow: 'hidden',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      boxShadow: dark
+        ? '0 2px 6px rgba(0,0,0,0.35), 0 6px 16px rgba(0,0,0,0.2)'
+        : '0 1px 3px rgba(0,0,0,0.07), 0 3px 10px rgba(0,0,0,0.06)',
+      ...style,
+    }}>
+      {/* blur + tint */}
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 9999,
+        backdropFilter: 'blur(12px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(180%)',
+        background: dark ? 'rgba(120,120,128,0.28)' : 'rgba(255,255,255,0.5)',
+      }} />
+      {/* shine */}
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 9999,
+        boxShadow: dark
+          ? 'inset 1.5px 1.5px 1px rgba(255,255,255,0.15), inset -1px -1px 1px rgba(255,255,255,0.08)'
+          : 'inset 1.5px 1.5px 1px rgba(255,255,255,0.7), inset -1px -1px 1px rgba(255,255,255,0.4)',
+        border: dark ? '0.5px solid rgba(255,255,255,0.15)' : '0.5px solid rgba(0,0,0,0.06)',
+      }} />
+      <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', padding: '0 4px' }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Navigation bar — glass pills + large title
+// ─────────────────────────────────────────────────────────────
+function IOSNavBar({ title = 'Title', dark = false, trailingIcon = true }) {
+  const muted = dark ? 'rgba(255,255,255,0.6)' : '#404040';
+  const text = dark ? '#fff' : '#000';
+  const pillIcon = (content) => (
+    <IOSGlassPill dark={dark}>
+      <div style={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {content}
+      </div>
+    </IOSGlassPill>
+  );
+  return (
+    <div style={{
+      display: 'flex', flexDirection: 'column', gap: 10,
+      paddingTop: 62, paddingBottom: 10, position: 'relative', zIndex: 5,
+    }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '0 16px',
+      }}>
+        {/* back chevron */}
+        {pillIcon(
+          <svg width="12" height="20" viewBox="0 0 12 20" fill="none" style={{ marginLeft: -1 }}>
+            <path d="M10 2L2 10l8 8" stroke={muted} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        )}
+        {/* trailing ellipsis */}
+        {trailingIcon && pillIcon(
+          <svg width="22" height="6" viewBox="0 0 22 6">
+            <circle cx="3" cy="3" r="2.5" fill={muted}/>
+            <circle cx="11" cy="3" r="2.5" fill={muted}/>
+            <circle cx="19" cy="3" r="2.5" fill={muted}/>
+          </svg>
+        )}
+      </div>
+      {/* large title */}
+      <div style={{
+        padding: '0 16px',
+        fontFamily: '-apple-system, system-ui',
+        fontSize: 34, fontWeight: 700, lineHeight: '41px',
+        color: text, letterSpacing: 0.4,
+      }}>{title}</div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Grouped list (inset card, r:26) + row (52px)
+// ─────────────────────────────────────────────────────────────
+function IOSListRow({ title, detail, icon, chevron = true, isLast = false, dark = false }) {
+  const text = dark ? '#fff' : '#000';
+  const sec = dark ? 'rgba(235,235,245,0.6)' : 'rgba(60,60,67,0.6)';
+  const ter = dark ? 'rgba(235,235,245,0.3)' : 'rgba(60,60,67,0.3)';
+  const sep = dark ? 'rgba(84,84,88,0.65)' : 'rgba(60,60,67,0.12)';
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', minHeight: 52,
+      padding: '0 16px', position: 'relative',
+      fontFamily: '-apple-system, system-ui', fontSize: 17,
+      letterSpacing: -0.43,
+    }}>
+      {icon && (
+        <div style={{
+          width: 30, height: 30, borderRadius: 7, background: icon,
+          marginRight: 12, flexShrink: 0,
+        }} />
+      )}
+      <div style={{ flex: 1, color: text }}>{title}</div>
+      {detail && <span style={{ color: sec, marginRight: 6 }}>{detail}</span>}
+      {chevron && (
+        <svg width="8" height="14" viewBox="0 0 8 14" style={{ flexShrink: 0 }}>
+          <path d="M1 1l6 6-6 6" stroke={ter} strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      )}
+      {!isLast && (
+        <div style={{
+          position: 'absolute', bottom: 0, right: 0,
+          left: icon ? 58 : 16, height: 0.5, background: sep,
+        }} />
+      )}
+    </div>
+  );
+}
+
+function IOSList({ header, children, dark = false }) {
+  const hc = dark ? 'rgba(235,235,245,0.6)' : 'rgba(60,60,67,0.6)';
+  const bg = dark ? '#1C1C1E' : '#fff';
+  return (
+    <div>
+      {header && (
+        <div style={{
+          fontFamily: '-apple-system, system-ui', fontSize: 13,
+          color: hc, textTransform: 'uppercase',
+          padding: '8px 36px 6px', letterSpacing: -0.08,
+        }}>{header}</div>
+      )}
+      <div style={{
+        background: bg, borderRadius: 26,
+        margin: '0 16px', overflow: 'hidden',
+      }}>{children}</div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Device frame
+// ─────────────────────────────────────────────────────────────
+function IOSDevice({
+  children, width = 402, height = 874, dark = false,
+  title, keyboard = false,
+}) {
+  return (
+    <div style={{
+      width, height, borderRadius: 48, overflow: 'hidden',
+      position: 'relative', background: dark ? '#000' : '#F2F2F7',
+      boxShadow: '0 40px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.12)',
+      fontFamily: '-apple-system, system-ui, sans-serif',
+      WebkitFontSmoothing: 'antialiased',
+    }}>
+      {/* dynamic island */}
+      <div style={{
+        position: 'absolute', top: 11, left: '50%', transform: 'translateX(-50%)',
+        width: 126, height: 37, borderRadius: 24, background: '#000', zIndex: 50,
+      }} />
+      {/* status bar (absolute) */}
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 }}>
+        <IOSStatusBar dark={dark} />
+      </div>
+      {/* nav + content */}
+      <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+        {title !== undefined && <IOSNavBar title={title} dark={dark} />}
+        <div style={{ flex: 1, overflow: 'auto' }}>{children}</div>
+        {keyboard && <IOSKeyboard dark={dark} />}
+      </div>
+      {/* home indicator — always on top */}
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 60,
+        height: 34, display: 'flex', justifyContent: 'center', alignItems: 'flex-end',
+        paddingBottom: 8, pointerEvents: 'none',
+      }}>
+        <div style={{
+          width: 139, height: 5, borderRadius: 100,
+          background: dark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.25)',
+        }} />
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Keyboard — iOS 26 liquid glass
+// ─────────────────────────────────────────────────────────────
+function IOSKeyboard({ dark = false }) {
+  const glyph = dark ? 'rgba(255,255,255,0.7)' : '#595959';
+  const sugg = dark ? 'rgba(255,255,255,0.6)' : '#333';
+  const keyBg = dark ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.85)';
+
+  // special-key icons
+  const icons = {
+    shift: <svg width="19" height="17" viewBox="0 0 19 17"><path d="M9.5 1L1 9.5h4.5V16h8V9.5H18L9.5 1z" fill={glyph}/></svg>,
+    del: <svg width="23" height="17" viewBox="0 0 23 17"><path d="M7 1h13a2 2 0 012 2v11a2 2 0 01-2 2H7l-6-7.5L7 1z" fill="none" stroke={glyph} strokeWidth="1.6" strokeLinejoin="round"/><path d="M10 5l7 7M17 5l-7 7" stroke={glyph} strokeWidth="1.6" strokeLinecap="round"/></svg>,
+    ret: <svg width="20" height="14" viewBox="0 0 20 14"><path d="M18 1v6H4m0 0l4-4M4 7l4 4" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  };
+
+  const key = (content, { w, flex, ret, fs = 25, k } = {}) => (
+    <div key={k} style={{
+      height: 42, borderRadius: 8.5,
+      flex: flex ? 1 : undefined, width: w, minWidth: 0,
+      background: ret ? '#08f' : keyBg,
+      boxShadow: '0 1px 0 rgba(0,0,0,0.075)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontFamily: '-apple-system, "SF Compact", system-ui',
+      fontSize: fs, fontWeight: 458, color: ret ? '#fff' : glyph,
+    }}>{content}</div>
+  );
+
+  const row = (keys, pad = 0) => (
+    <div style={{ display: 'flex', gap: 6.5, justifyContent: 'center', padding: `0 ${pad}px` }}>
+      {keys.map(l => key(l, { flex: true, k: l }))}
+    </div>
+  );
+
+  return (
+    <div style={{
+      position: 'relative', zIndex: 15, borderRadius: 27, overflow: 'hidden',
+      padding: '11px 0 2px',
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      boxShadow: dark
+        ? '0 -2px 20px rgba(0,0,0,0.09)'
+        : '0 -1px 6px rgba(0,0,0,0.018), 0 -3px 20px rgba(0,0,0,0.012)',
+    }}>
+      {/* liquid glass bg — same recipe as nav pills */}
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 27,
+        backdropFilter: 'blur(12px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(180%)',
+        background: dark ? 'rgba(120,120,128,0.14)' : 'rgba(255,255,255,0.25)',
+      }} />
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 27,
+        boxShadow: dark
+          ? 'inset 1.5px 1.5px 1px rgba(255,255,255,0.15)'
+          : 'inset 1.5px 1.5px 1px rgba(255,255,255,0.7), inset -1px -1px 1px rgba(255,255,255,0.4)',
+        border: dark ? '0.5px solid rgba(255,255,255,0.15)' : '0.5px solid rgba(0,0,0,0.06)',
+        pointerEvents: 'none',
+      }} />
+
+      {/* autocorrect bar */}
+      <div style={{
+        display: 'flex', gap: 20, alignItems: 'center',
+        padding: '8px 22px 13px', width: '100%', boxSizing: 'border-box',
+        position: 'relative',
+      }}>
+        {['"The"', 'the', 'to'].map((w, i) => (
+          <React.Fragment key={i}>
+            {i > 0 && <div style={{ width: 1, height: 25, background: '#ccc', opacity: 0.3 }} />}
+            <div style={{
+              flex: 1, textAlign: 'center',
+              fontFamily: '-apple-system, system-ui', fontSize: 17,
+              color: sugg, letterSpacing: -0.43, lineHeight: '22px',
+            }}>{w}</div>
+          </React.Fragment>
+        ))}
+      </div>
+
+      {/* key layout */}
+      <div style={{
+        display: 'flex', flexDirection: 'column', gap: 13,
+        padding: '0 6.5px', width: '100%', boxSizing: 'border-box',
+        position: 'relative',
+      }}>
+        {row(['q','w','e','r','t','y','u','i','o','p'])}
+        {row(['a','s','d','f','g','h','j','k','l'], 20)}
+        <div style={{ display: 'flex', gap: 14.25, alignItems: 'center' }}>
+          {key(icons.shift, { w: 45, k: 'shift' })}
+          <div style={{ display: 'flex', gap: 6.5, flex: 1 }}>
+            {['z','x','c','v','b','n','m'].map(l => key(l, { flex: true, k: l }))}
+          </div>
+          {key(icons.del, { w: 45, k: 'del' })}
+        </div>
+        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+          {key('ABC', { w: 92.25, fs: 18, k: 'abc' })}
+          {key('', { flex: true, k: 'space' })}
+          {key(icons.ret, { w: 92.25, ret: true, k: 'ret' })}
+        </div>
+      </div>
+
+      {/* bottom spacer (emoji+mic area, icons omitted) */}
+      <div style={{ height: 56, width: '100%', position: 'relative' }} />
+    </div>
+  );
+}
+
+Object.assign(window, {
+  IOSDevice, IOSStatusBar, IOSNavBar, IOSGlassPill, IOSList, IOSListRow, IOSKeyboard,
+});
+</script>
+
+<script type="text/babel">
+
+// tweaks-panel.jsx
+// Reusable Tweaks shell + form-control helpers.
+//
+// Owns the host protocol (listens for __activate_edit_mode / __deactivate_edit_mode,
+// posts __edit_mode_available / __edit_mode_set_keys / __edit_mode_dismissed) so
+// individual prototypes don't re-roll it. Ships a consistent set of controls so you
+// don't hand-draw <input type="range">, segmented radios, steppers, etc.
+//
+// Usage (in an HTML file that loads React + Babel):
+//
+//   const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+//     "primaryColor": "#D97757",
+//     "palette": ["#D97757", "#29261b", "#f6f4ef"],
+//     "fontSize": 16,
+//     "density": "regular",
+//     "dark": false
+//   }/*EDITMODE-END*/;
+//
+//   function App() {
+//     const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+//     return (
+//       <div style={{ fontSize: t.fontSize, color: t.primaryColor }}>
+//         Hello
+//         <TweaksPanel>
+//           <TweakSection label="Typography" />
+//           <TweakSlider label="Font size" value={t.fontSize} min={10} max={32} unit="px"
+//                        onChange={(v) => setTweak('fontSize', v)} />
+//           <TweakRadio  label="Density" value={t.density}
+//                        options={['compact', 'regular', 'comfy']}
+//                        onChange={(v) => setTweak('density', v)} />
+//           <TweakSection label="Theme" />
+//           <TweakColor  label="Primary" value={t.primaryColor}
+//                        options={['#D97757', '#2A6FDB', '#1F8A5B', '#7A5AE0']}
+//                        onChange={(v) => setTweak('primaryColor', v)} />
+//           <TweakColor  label="Palette" value={t.palette}
+//                        options={[['#D97757', '#29261b', '#f6f4ef'],
+//                                  ['#475569', '#0f172a', '#f1f5f9']]}
+//                        onChange={(v) => setTweak('palette', v)} />
+//           <TweakToggle label="Dark mode" value={t.dark}
+//                        onChange={(v) => setTweak('dark', v)} />
+//         </TweaksPanel>
+//       </div>
+//     );
+//   }
+//
+// ─────────────────────────────────────────────────────────────────────────────
+
+const __TWEAKS_STYLE = `
+  .twk-panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:280px;
+    max-height:calc(100vh - 32px);display:flex;flex-direction:column;
+    transform:scale(var(--dc-inv-zoom,1));transform-origin:bottom right;
+    background:rgba(250,249,247,.78);color:#29261b;
+    -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
+    border:.5px solid rgba(255,255,255,.6);border-radius:14px;
+    box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 12px 40px rgba(0,0,0,.18);
+    font:11.5px/1.4 ui-sans-serif,system-ui,-apple-system,sans-serif;overflow:hidden}
+  .twk-hd{display:flex;align-items:center;justify-content:space-between;
+    padding:10px 8px 10px 14px;cursor:move;user-select:none}
+  .twk-hd b{font-size:12px;font-weight:600;letter-spacing:.01em}
+  .twk-x{appearance:none;border:0;background:transparent;color:rgba(41,38,27,.55);
+    width:22px;height:22px;border-radius:6px;cursor:default;font-size:13px;line-height:1}
+  .twk-x:hover{background:rgba(0,0,0,.06);color:#29261b}
+  .twk-body{padding:2px 14px 14px;display:flex;flex-direction:column;gap:10px;
+    overflow-y:auto;overflow-x:hidden;min-height:0;
+    scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.15) transparent}
+  .twk-body::-webkit-scrollbar{width:8px}
+  .twk-body::-webkit-scrollbar-track{background:transparent;margin:2px}
+  .twk-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:4px;
+    border:2px solid transparent;background-clip:content-box}
+  .twk-body::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.25);
+    border:2px solid transparent;background-clip:content-box}
+  .twk-row{display:flex;flex-direction:column;gap:5px}
+  .twk-row-h{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
+  .twk-lbl{display:flex;justify-content:space-between;align-items:baseline;
+    color:rgba(41,38,27,.72)}
+  .twk-lbl>span:first-child{font-weight:500}
+  .twk-val{color:rgba(41,38,27,.5);font-variant-numeric:tabular-nums}
+
+  .twk-sect{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:rgba(41,38,27,.45);padding:10px 0 0}
+  .twk-sect:first-child{padding-top:0}
+
+  .twk-field{appearance:none;box-sizing:border-box;width:100%;min-width:0;height:26px;padding:0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;
+    background:rgba(255,255,255,.6);color:inherit;font:inherit;outline:none}
+  .twk-field:focus{border-color:rgba(0,0,0,.25);background:rgba(255,255,255,.85)}
+  select.twk-field{padding-right:22px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='rgba(0,0,0,.5)' d='M0 0h10L5 6z'/></svg>");
+    background-repeat:no-repeat;background-position:right 8px center}
+
+  .twk-slider{appearance:none;-webkit-appearance:none;width:100%;height:4px;margin:6px 0;
+    border-radius:999px;background:rgba(0,0,0,.12);outline:none}
+  .twk-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+    width:14px;height:14px;border-radius:50%;background:#fff;
+    border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+  .twk-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;
+    background:#fff;border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+
+  .twk-seg{position:relative;display:flex;padding:2px;border-radius:8px;
+    background:rgba(0,0,0,.06);user-select:none}
+  .twk-seg-thumb{position:absolute;top:2px;bottom:2px;border-radius:6px;
+    background:rgba(255,255,255,.9);box-shadow:0 1px 2px rgba(0,0,0,.12);
+    transition:left .15s cubic-bezier(.3,.7,.4,1),width .15s}
+  .twk-seg.dragging .twk-seg-thumb{transition:none}
+  .twk-seg button{appearance:none;position:relative;z-index:1;flex:1;border:0;
+    background:transparent;color:inherit;font:inherit;font-weight:500;min-height:22px;
+    border-radius:6px;cursor:default;padding:4px 6px;line-height:1.2;
+    overflow-wrap:anywhere}
+
+  .twk-toggle{position:relative;width:32px;height:18px;border:0;border-radius:999px;
+    background:rgba(0,0,0,.15);transition:background .15s;cursor:default;padding:0}
+  .twk-toggle[data-on="1"]{background:#34c759}
+  .twk-toggle i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+  .twk-toggle[data-on="1"] i{transform:translateX(14px)}
+
+  .twk-num{display:flex;align-items:center;box-sizing:border-box;min-width:0;height:26px;padding:0 0 0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;background:rgba(255,255,255,.6)}
+  .twk-num-lbl{font-weight:500;color:rgba(41,38,27,.6);cursor:ew-resize;
+    user-select:none;padding-right:8px}
+  .twk-num input{flex:1;min-width:0;height:100%;border:0;background:transparent;
+    font:inherit;font-variant-numeric:tabular-nums;text-align:right;padding:0 8px 0 0;
+    outline:none;color:inherit;-moz-appearance:textfield}
+  .twk-num input::-webkit-inner-spin-button,.twk-num input::-webkit-outer-spin-button{
+    -webkit-appearance:none;margin:0}
+  .twk-num-unit{padding-right:8px;color:rgba(41,38,27,.45)}
+
+  .twk-btn{appearance:none;height:26px;padding:0 12px;border:0;border-radius:7px;
+    background:rgba(0,0,0,.78);color:#fff;font:inherit;font-weight:500;cursor:default}
+  .twk-btn:hover{background:rgba(0,0,0,.88)}
+  .twk-btn.secondary{background:rgba(0,0,0,.06);color:inherit}
+  .twk-btn.secondary:hover{background:rgba(0,0,0,.1)}
+
+  .twk-swatch{appearance:none;-webkit-appearance:none;width:56px;height:22px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:6px;padding:0;cursor:default;
+    background:transparent;flex-shrink:0}
+  .twk-swatch::-webkit-color-swatch-wrapper{padding:0}
+  .twk-swatch::-webkit-color-swatch{border:0;border-radius:5.5px}
+  .twk-swatch::-moz-color-swatch{border:0;border-radius:5.5px}
+
+  .twk-chips{display:flex;gap:6px}
+  .twk-chip{position:relative;appearance:none;flex:1;min-width:0;height:46px;
+    padding:0;border:0;border-radius:6px;overflow:hidden;cursor:default;
+    box-shadow:0 0 0 .5px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.06);
+    transition:transform .12s cubic-bezier(.3,.7,.4,1),box-shadow .12s}
+  .twk-chip:hover{transform:translateY(-1px);
+    box-shadow:0 0 0 .5px rgba(0,0,0,.18),0 4px 10px rgba(0,0,0,.12)}
+  .twk-chip[data-on="1"]{box-shadow:0 0 0 1.5px rgba(0,0,0,.85),
+    0 2px 6px rgba(0,0,0,.15)}
+  .twk-chip>span{position:absolute;top:0;bottom:0;right:0;width:34%;
+    display:flex;flex-direction:column;box-shadow:-1px 0 0 rgba(0,0,0,.1)}
+  .twk-chip>span>i{flex:1;box-shadow:0 -1px 0 rgba(0,0,0,.1)}
+  .twk-chip>span>i:first-child{box-shadow:none}
+  .twk-chip svg{position:absolute;top:6px;left:6px;width:13px;height:13px;
+    filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))}
+`;
+
+// ── useTweaks ───────────────────────────────────────────────────────────────
+// Single source of truth for tweak values. setTweak persists via the host
+// (__edit_mode_set_keys → host rewrites the EDITMODE block on disk).
+function useTweaks(defaults) {
+  const [values, setValues] = React.useState(defaults);
+  // Accepts either setTweak('key', value) or setTweak({ key: value, ... }) so a
+  // useState-style call doesn't write a "[object Object]" key into the persisted
+  // JSON block.
+  const setTweak = React.useCallback((keyOrEdits, val) => {
+    const edits = typeof keyOrEdits === 'object' && keyOrEdits !== null
+      ? keyOrEdits : { [keyOrEdits]: val };
+    setValues((prev) => ({ ...prev, ...edits }));
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*');
+    // Same-window signal so in-page listeners (deck-stage rail thumbnails)
+    // can react — the parent message only reaches the host, not peers.
+    window.dispatchEvent(new CustomEvent('tweakchange', { detail: edits }));
+  }, []);
+  return [values, setTweak];
+}
+
+// ── TweaksPanel ─────────────────────────────────────────────────────────────
+// Floating shell. Registers the protocol listener BEFORE announcing
+// availability — if the announce ran first, the host's activate could land
+// before our handler exists and the toolbar toggle would silently no-op.
+// The close button posts __edit_mode_dismissed so the host's toolbar toggle
+// flips off in lockstep; the host echoes __deactivate_edit_mode back which
+// is what actually hides the panel.
+function TweaksPanel({ title = 'Tweaks', noDeckControls = false, children }) {
+  const [open, setOpen] = React.useState(false);
+  const dragRef = React.useRef(null);
+  // Auto-inject a rail toggle when a <deck-stage> is on the page. The
+  // toggle drives the deck's per-viewer _railVisible via window message;
+  // state is mirrored from the same localStorage key the deck reads so
+  // the control reflects reality across reloads. The mechanism is the
+  // message — authors who want custom placement can post it directly
+  // and pass noDeckControls to suppress this one.
+  const hasDeckStage = React.useMemo(
+    () => typeof document !== 'undefined' && !!document.querySelector('deck-stage'),
+    [],
+  );
+  // deck-stage enables its rail in connectedCallback, but this panel can
+  // mount before that element has upgraded. The initial read catches the
+  // common case; the listener covers mounting first. (Older deck-stage.js
+  // copies still wait for the host's __omelette_rail_enabled postMessage —
+  // same listener handles those.)
+  const [railEnabled, setRailEnabled] = React.useState(
+    () => hasDeckStage && !!document.querySelector('deck-stage')?._railEnabled,
+  );
+  React.useEffect(() => {
+    if (!hasDeckStage || railEnabled) return undefined;
+    const onMsg = (e) => {
+      if (e.data && e.data.type === '__omelette_rail_enabled') setRailEnabled(true);
+    };
+    window.addEventListener('message', onMsg);
+    return () => window.removeEventListener('message', onMsg);
+  }, [hasDeckStage, railEnabled]);
+  const [railVisible, setRailVisible] = React.useState(() => {
+    try { return localStorage.getItem('deck-stage.railVisible') !== '0'; } catch (e) { return true; }
+  });
+  const toggleRail = (on) => {
+    setRailVisible(on);
+    window.postMessage({ type: '__deck_rail_visible', on }, '*');
+  };
+  const offsetRef = React.useRef({ x: 16, y: 16 });
+  const PAD = 16;
+
+  const clampToViewport = React.useCallback(() => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const w = panel.offsetWidth, h = panel.offsetHeight;
+    const maxRight = Math.max(PAD, window.innerWidth - w - PAD);
+    const maxBottom = Math.max(PAD, window.innerHeight - h - PAD);
+    offsetRef.current = {
+      x: Math.min(maxRight, Math.max(PAD, offsetRef.current.x)),
+      y: Math.min(maxBottom, Math.max(PAD, offsetRef.current.y)),
+    };
+    panel.style.right = offsetRef.current.x + 'px';
+    panel.style.bottom = offsetRef.current.y + 'px';
+  }, []);
+
+  React.useEffect(() => {
+    if (!open) return;
+    clampToViewport();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', clampToViewport);
+      return () => window.removeEventListener('resize', clampToViewport);
+    }
+    const ro = new ResizeObserver(clampToViewport);
+    ro.observe(document.documentElement);
+    return () => ro.disconnect();
+  }, [open, clampToViewport]);
+
+  React.useEffect(() => {
+    const onMsg = (e) => {
+      const t = e?.data?.type;
+      if (t === '__activate_edit_mode') setOpen(true);
+      else if (t === '__deactivate_edit_mode') setOpen(false);
+    };
+    window.addEventListener('message', onMsg);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
+
+  const dismiss = () => {
+    setOpen(false);
+    window.parent.postMessage({ type: '__edit_mode_dismissed' }, '*');
+  };
+
+  const onDragStart = (e) => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const r = panel.getBoundingClientRect();
+    const sx = e.clientX, sy = e.clientY;
+    const startRight = window.innerWidth - r.right;
+    const startBottom = window.innerHeight - r.bottom;
+    const move = (ev) => {
+      offsetRef.current = {
+        x: startRight - (ev.clientX - sx),
+        y: startBottom - (ev.clientY - sy),
+      };
+      clampToViewport();
+    };
+    const up = () => {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', up);
+    };
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+  };
+
+  if (!open) return null;
+  return (
+    <>
+      <style>{__TWEAKS_STYLE}</style>
+      <div ref={dragRef} className="twk-panel" data-noncommentable=""
+           style={{ right: offsetRef.current.x, bottom: offsetRef.current.y }}>
+        <div className="twk-hd" onMouseDown={onDragStart}>
+          <b>{title}</b>
+          <button className="twk-x" aria-label="Close tweaks"
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onClick={dismiss}>✕</button>
+        </div>
+        <div className="twk-body">
+          {children}
+          {hasDeckStage && railEnabled && !noDeckControls && (
+            <TweakSection label="Deck">
+              <TweakToggle label="Thumbnail rail" value={railVisible} onChange={toggleRail} />
+            </TweakSection>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ── Layout helpers ──────────────────────────────────────────────────────────
+
+function TweakSection({ label, children }) {
+  return (
+    <>
+      <div className="twk-sect">{label}</div>
+      {children}
+    </>
+  );
+}
+
+function TweakRow({ label, value, children, inline = false }) {
+  return (
+    <div className={inline ? 'twk-row twk-row-h' : 'twk-row'}>
+      <div className="twk-lbl">
+        <span>{label}</span>
+        {value != null && <span className="twk-val">{value}</span>}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+// ── Controls ────────────────────────────────────────────────────────────────
+
+function TweakSlider({ label, value, min = 0, max = 100, step = 1, unit = '', onChange }) {
+  return (
+    <TweakRow label={label} value={`${value}${unit}`}>
+      <input type="range" className="twk-slider" min={min} max={max} step={step}
+             value={value} onChange={(e) => onChange(Number(e.target.value))} />
+    </TweakRow>
+  );
+}
+
+function TweakToggle({ label, value, onChange }) {
+  return (
+    <div className="twk-row twk-row-h">
+      <div className="twk-lbl"><span>{label}</span></div>
+      <button type="button" className="twk-toggle" data-on={value ? '1' : '0'}
+              role="switch" aria-checked={!!value}
+              onClick={() => onChange(!value)}><i /></button>
+    </div>
+  );
+}
+
+function TweakRadio({ label, value, options, onChange }) {
+  const trackRef = React.useRef(null);
+  const [dragging, setDragging] = React.useState(false);
+  // The active value is read by pointer-move handlers attached for the lifetime
+  // of a drag — ref it so a stale closure doesn't fire onChange for every move.
+  const valueRef = React.useRef(value);
+  valueRef.current = value;
+
+  // Segments wrap mid-word once per-segment width runs out. The track is
+  // ~248px (280 panel − 28 body pad − 4 seg pad), each button loses 12px
+  // to its own padding, and 11.5px system-ui averages ~6.3px/char — so 2
+  // options fit ~16 chars each, 3 fit ~10. Past that (or >3 options), fall
+  // back to a dropdown rather than wrap.
+  const labelLen = (o) => String(typeof o === 'object' ? o.label : o).length;
+  const maxLen = options.reduce((m, o) => Math.max(m, labelLen(o)), 0);
+  const fitsAsSegments = maxLen <= ({ 2: 16, 3: 10 }[options.length] ?? 0);
+  if (!fitsAsSegments) {
+    // <select> emits strings — map back to the original option value so the
+    // fallback stays type-preserving (numbers, booleans) like the segment path.
+    const resolve = (s) => {
+      const m = options.find((o) => String(typeof o === 'object' ? o.value : o) === s);
+      return m === undefined ? s : typeof m === 'object' ? m.value : m;
+    };
+    return <TweakSelect label={label} value={value} options={options}
+                        onChange={(s) => onChange(resolve(s))} />;
+  }
+  const opts = options.map((o) => (typeof o === 'object' ? o : { value: o, label: o }));
+  const idx = Math.max(0, opts.findIndex((o) => o.value === value));
+  const n = opts.length;
+
+  const segAt = (clientX) => {
+    const r = trackRef.current.getBoundingClientRect();
+    const inner = r.width - 4;
+    const i = Math.floor(((clientX - r.left - 2) / inner) * n);
+    return opts[Math.max(0, Math.min(n - 1, i))].value;
+  };
+
+  const onPointerDown = (e) => {
+    setDragging(true);
+    const v0 = segAt(e.clientX);
+    if (v0 !== valueRef.current) onChange(v0);
+    const move = (ev) => {
+      if (!trackRef.current) return;
+      const v = segAt(ev.clientX);
+      if (v !== valueRef.current) onChange(v);
+    };
+    const up = () => {
+      setDragging(false);
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+
+  return (
+    <TweakRow label={label}>
+      <div ref={trackRef} role="radiogroup" onPointerDown={onPointerDown}
+           className={dragging ? 'twk-seg dragging' : 'twk-seg'}>
+        <div className="twk-seg-thumb"
+             style={{ left: `calc(2px + ${idx} * (100% - 4px) / ${n})`,
+                      width: `calc((100% - 4px) / ${n})` }} />
+        {opts.map((o) => (
+          <button key={o.value} type="button" role="radio" aria-checked={o.value === value}>
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </TweakRow>
+  );
+}
+
+function TweakSelect({ label, value, options, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <select className="twk-field" value={value} onChange={(e) => onChange(e.target.value)}>
+        {options.map((o) => {
+          const v = typeof o === 'object' ? o.value : o;
+          const l = typeof o === 'object' ? o.label : o;
+          return <option key={v} value={v}>{l}</option>;
+        })}
+      </select>
+    </TweakRow>
+  );
+}
+
+function TweakText({ label, value, placeholder, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <input className="twk-field" type="text" value={value} placeholder={placeholder}
+             onChange={(e) => onChange(e.target.value)} />
+    </TweakRow>
+  );
+}
+
+function TweakNumber({ label, value, min, max, step = 1, unit = '', onChange }) {
+  const clamp = (n) => {
+    if (min != null && n < min) return min;
+    if (max != null && n > max) return max;
+    return n;
+  };
+  const startRef = React.useRef({ x: 0, val: 0 });
+  const onScrubStart = (e) => {
+    e.preventDefault();
+    startRef.current = { x: e.clientX, val: value };
+    const decimals = (String(step).split('.')[1] || '').length;
+    const move = (ev) => {
+      const dx = ev.clientX - startRef.current.x;
+      const raw = startRef.current.val + dx * step;
+      const snapped = Math.round(raw / step) * step;
+      onChange(clamp(Number(snapped.toFixed(decimals))));
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+  return (
+    <div className="twk-num">
+      <span className="twk-num-lbl" onPointerDown={onScrubStart}>{label}</span>
+      <input type="number" value={value} min={min} max={max} step={step}
+             onChange={(e) => onChange(clamp(Number(e.target.value)))} />
+      {unit && <span className="twk-num-unit">{unit}</span>}
+    </div>
+  );
+}
+
+// Relative-luminance contrast pick — checkmarks drawn over a swatch need to
+// read on both #111 and #fafafa without per-option configuration. Hex input
+// only (#rgb / #rrggbb); named or rgb()/hsl() colors fall through to "light".
+function __twkIsLight(hex) {
+  const h = String(hex).replace('#', '');
+  const x = h.length === 3 ? h.replace(/./g, (c) => c + c) : h.padEnd(6, '0');
+  const n = parseInt(x.slice(0, 6), 16);
+  if (Number.isNaN(n)) return true;
+  const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  return r * 299 + g * 587 + b * 114 > 148000;
+}
+
+const __TwkCheck = ({ light }) => (
+  <svg viewBox="0 0 14 14" aria-hidden="true">
+    <path d="M3 7.2 5.8 10 11 4.2" fill="none" strokeWidth="2.2"
+          strokeLinecap="round" strokeLinejoin="round"
+          stroke={light ? 'rgba(0,0,0,.78)' : '#fff'} />
+  </svg>
+);
+
+// TweakColor — curated color/palette picker. Each option is either a single
+// hex string or an array of 1-5 hex strings; the card adapts — a lone color
+// renders solid, a palette renders colors[0] as the hero (left ~2/3) with the
+// rest stacked in a sharp column on the right. onChange emits the
+// option in the shape it was passed (string stays string, array stays array).
+// Without options it falls back to the native color input for back-compat.
+function TweakColor({ label, value, options, onChange }) {
+  if (!options || !options.length) {
+    return (
+      <div className="twk-row twk-row-h">
+        <div className="twk-lbl"><span>{label}</span></div>
+        <input type="color" className="twk-swatch" value={value}
+               onChange={(e) => onChange(e.target.value)} />
+      </div>
+    );
+  }
+  // Native <input type=color> emits lowercase hex per the HTML spec, so
+  // compare case-insensitively. String() guards JSON.stringify(undefined),
+  // which returns the primitive undefined (no .toLowerCase).
+  const key = (o) => String(JSON.stringify(o)).toLowerCase();
+  const cur = key(value);
+  return (
+    <TweakRow label={label}>
+      <div className="twk-chips" role="radiogroup">
+        {options.map((o, i) => {
+          const colors = Array.isArray(o) ? o : [o];
+          const [hero, ...rest] = colors;
+          const sup = rest.slice(0, 4);
+          const on = key(o) === cur;
+          return (
+            <button key={i} type="button" className="twk-chip" role="radio"
+                    aria-checked={on} data-on={on ? '1' : '0'}
+                    aria-label={colors.join(', ')} title={colors.join(' · ')}
+                    style={{ background: hero }}
+                    onClick={() => onChange(o)}>
+              {sup.length > 0 && (
+                <span>
+                  {sup.map((c, j) => <i key={j} style={{ background: c }} />)}
+                </span>
+              )}
+              {on && <__TwkCheck light={__twkIsLight(hero)} />}
+            </button>
+          );
+        })}
+      </div>
+    </TweakRow>
+  );
+}
+
+function TweakButton({ label, onClick, secondary = false }) {
+  return (
+    <button type="button" className={secondary ? 'twk-btn secondary' : 'twk-btn'}
+            onClick={onClick}>{label}</button>
+  );
+}
+
+Object.assign(window, {
+  useTweaks, TweaksPanel, TweakSection, TweakRow,
+  TweakSlider, TweakToggle, TweakRadio, TweakSelect,
+  TweakText, TweakNumber, TweakColor, TweakButton,
+});
+</script>
+
+<script type="text/babel">
+// Tilt mascot: "Til" — a soft blob creature drawn in pure CSS.
+// Moods: happy | excited | sleepy | concerned | dramatic | proud | curious
+
+function Til({ mood = 'happy', size = 120, color = '#FFB59A', accessory = null }) {
+  const moods = {
+    happy:     { mouth: 'smile',   brow: 'normal', tilt: 0,    eyes: 'bean' },
+    excited:   { mouth: 'open',    brow: 'high',   tilt: -4,   eyes: 'star' },
+    sleepy:    { mouth: 'tiny',    brow: 'normal', tilt: -8,   eyes: 'closed' },
+    concerned: { mouth: 'wiggle',  brow: 'worry',  tilt: 0,    eyes: 'bean' },
+    dramatic:  { mouth: 'open',    brow: 'high',   tilt: -12,  eyes: 'wide' },
+    proud:     { mouth: 'smug',    brow: 'normal', tilt: 6,    eyes: 'closed' },
+    curious:   { mouth: 'tiny',    brow: 'cocked', tilt: 8,    eyes: 'bean' },
+  };
+  const m = moods[mood] || moods.happy;
+
+  return (
+    <div className="mascot-stage" style={{ width: size, height: size }}>
+      {/* shadow */}
+      <div style={{
+        position: 'absolute', bottom: 4, left: '50%', transform: 'translateX(-50%)',
+        width: size * 0.62, height: 8,
+        background: 'rgba(42,31,26,0.12)', borderRadius: '50%',
+        filter: 'blur(4px)',
+      }} />
+      <div className="mascot" style={{
+        position: 'relative',
+        width: size * 0.82, height: size * 0.86,
+        transform: `rotate(${m.tilt}deg)`,
+      }}>
+        {/* Body — squircle with subtle gradient */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: `radial-gradient(ellipse at 30% 25%, #FFF 0%, ${color} 55%, ${shade(color, -12)} 100%)`,
+          borderRadius: '46% 54% 50% 50% / 54% 56% 44% 46%',
+          boxShadow: `inset -6px -10px 0 rgba(0,0,0,0.06), 0 6px 18px ${color}55`,
+        }} />
+        {/* Antenna */}
+        <div style={{
+          position: 'absolute', top: -8, left: '52%',
+          width: 2, height: 14,
+          background: shade(color, -20),
+          borderRadius: 2,
+          transformOrigin: 'bottom',
+          animation: 'wiggle 3s ease-in-out infinite',
+        }}>
+          <div style={{
+            position: 'absolute', top: -8, left: -4,
+            width: 10, height: 10, borderRadius: '50%',
+            background: '#FFD66B',
+            boxShadow: '0 0 0 2px rgba(255, 214, 107, 0.4)',
+          }} />
+        </div>
+        {/* Eyes */}
+        <Eyes kind={m.eyes} brow={m.brow} cx={size * 0.82} cy={size * 0.86} />
+        {/* Blush */}
+        <div style={dotStyle(size * 0.16, size * 0.5, 14, '#F49AC2', 0.55)} />
+        <div style={dotStyle(size * 0.5, size * 0.5, 14, '#F49AC2', 0.55)} />
+        {/* Mouth */}
+        <Mouth kind={m.mouth} cx={size * 0.82} cy={size * 0.86} />
+      </div>
+      {accessory && (
+        <div style={{ position: 'absolute', top: -6, right: 8, fontSize: 32 }}>{accessory}</div>
+      )}
+    </div>
+  );
+}
+
+function Eyes({ kind, brow, cx, cy }) {
+  const left = cx * 0.28, right = cx * 0.56, top = cy * 0.38;
+  const ink = '#2A1F1A';
+  if (kind === 'closed') {
+    return (
+      <>
+        <div style={{ position: 'absolute', left, top: top + 4, width: 14, height: 4, borderRadius: 4, background: ink, transform: 'rotate(8deg)' }} />
+        <div style={{ position: 'absolute', left: right, top: top + 4, width: 14, height: 4, borderRadius: 4, background: ink, transform: 'rotate(-8deg)' }} />
+      </>
+    );
+  }
+  if (kind === 'star') {
+    return (
+      <>
+        <div style={{ position: 'absolute', left: left - 2, top: top - 2, fontSize: 18 }}>✨</div>
+        <div style={{ position: 'absolute', left: right - 2, top: top - 2, fontSize: 18 }}>✨</div>
+      </>
+    );
+  }
+  // bean / wide
+  const w = kind === 'wide' ? 14 : 10;
+  const h = kind === 'wide' ? 16 : 14;
+  return (
+    <>
+      <div style={{
+        position: 'absolute', left, top, width: w, height: h, borderRadius: '50%',
+        background: ink, animation: 'blink 5s infinite',
+      }}>
+        <div style={{ position: 'absolute', top: 2, left: 2, width: 4, height: 4, borderRadius: '50%', background: '#FFF' }} />
+      </div>
+      <div style={{
+        position: 'absolute', left: right, top, width: w, height: h, borderRadius: '50%',
+        background: ink, animation: 'blink 5.2s infinite',
+      }}>
+        <div style={{ position: 'absolute', top: 2, left: 2, width: 4, height: 4, borderRadius: '50%', background: '#FFF' }} />
+      </div>
+      {brow === 'worry' && (
+        <>
+          <div style={{ position: 'absolute', left: left - 2, top: top - 8, width: 14, height: 3, borderRadius: 3, background: ink, transform: 'rotate(-14deg)' }} />
+          <div style={{ position: 'absolute', left: right - 2, top: top - 8, width: 14, height: 3, borderRadius: 3, background: ink, transform: 'rotate(14deg)' }} />
+        </>
+      )}
+      {brow === 'high' && (
+        <>
+          <div style={{ position: 'absolute', left: left + 2, top: top - 10, width: 12, height: 3, borderRadius: 3, background: ink }} />
+          <div style={{ position: 'absolute', left: right + 2, top: top - 10, width: 12, height: 3, borderRadius: 3, background: ink }} />
+        </>
+      )}
+      {brow === 'cocked' && (
+        <div style={{ position: 'absolute', left: right + 2, top: top - 10, width: 12, height: 3, borderRadius: 3, background: ink, transform: 'rotate(-10deg)' }} />
+      )}
+    </>
+  );
+}
+
+function Mouth({ kind, cx, cy }) {
+  const left = cx * 0.36, top = cy * 0.6;
+  const ink = '#2A1F1A';
+  if (kind === 'smile') {
+    return (
+      <div style={{
+        position: 'absolute', left, top,
+        width: 26, height: 14,
+        borderBottom: `3px solid ${ink}`,
+        borderRadius: '0 0 26px 26px',
+      }} />
+    );
+  }
+  if (kind === 'open') {
+    return (
+      <div style={{
+        position: 'absolute', left: left + 4, top,
+        width: 18, height: 14,
+        background: ink,
+        borderRadius: '8px 8px 14px 14px',
+      }}>
+        <div style={{
+          position: 'absolute', bottom: 1, left: 3, right: 3, height: 4,
+          background: '#F49AC2', borderRadius: 4,
+        }} />
+      </div>
+    );
+  }
+  if (kind === 'tiny') {
+    return (
+      <div style={{
+        position: 'absolute', left: left + 10, top: top + 2,
+        width: 8, height: 4, borderRadius: 4, background: ink,
+      }} />
+    );
+  }
+  if (kind === 'smug') {
+    return (
+      <div style={{
+        position: 'absolute', left: left + 4, top,
+        width: 18, height: 8,
+        borderTop: `3px solid ${ink}`,
+        borderRadius: '18px 18px 0 0',
+        transform: 'translateY(-1px)',
+      }} />
+    );
+  }
+  if (kind === 'wiggle') {
+    return (
+      <svg style={{ position: 'absolute', left: left + 2, top: top + 2 }} width="22" height="6" viewBox="0 0 22 6">
+        <path d="M1 3 Q 5 0, 8 3 T 15 3 T 22 3" stroke={ink} strokeWidth="2.5" fill="none" strokeLinecap="round" />
+      </svg>
+    );
+  }
+  return null;
+}
+
+function dotStyle(x, y, size, color, opacity) {
+  return {
+    position: 'absolute',
+    left: x, top: y,
+    width: size, height: size * 0.7,
+    background: color,
+    opacity,
+    borderRadius: '50%',
+    filter: 'blur(1px)',
+  };
+}
+
+function shade(hex, percent) {
+  // very small darken/lighten
+  const f = parseInt(hex.slice(1), 16);
+  const t = percent < 0 ? 0 : 255;
+  const p = Math.abs(percent) / 100;
+  const R = f >> 16, G = (f >> 8) & 0xff, B = f & 0xff;
+  const r = Math.round((t - R) * p) + R;
+  const g = Math.round((t - G) * p) + G;
+  const b = Math.round((t - B) * p) + B;
+  return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
+
+// Friend avatars (rounded squares with initial + colored bg + small face)
+function FriendAvatar({ name, color, size = 40, mood = 'happy' }) {
+  const initial = (name || '?')[0].toUpperCase();
+  return (
+    <div className="avatar" style={{
+      width: size, height: size,
+      background: color,
+      fontSize: size * 0.46,
+      boxShadow: 'inset 0 -2px 0 rgba(0,0,0,0.08)',
+      position: 'relative',
+    }}>
+      <span>{initial}</span>
+    </div>
+  );
+}
+
+Object.assign(window, { Til, FriendAvatar });
+</script>
+
+<script type="text/babel">
+// Tilt — data, domain model, and calculation logic
+//
+// PHILOSOPHY: This is a social memory app, not an accounting app.
+// - Internal scores are NEVER exposed directly to users
+// - All UI uses TILT_STATE buckets and human-readable phrases
+// - Time decay prevents permanent "debt" accumulation
+// - Treat levels are symbolic — not financial denominations
+
+// ── Treat levels (symbolic only — not currency) ──────────────────
+const TREAT_LEVELS = [10, 20, 30, 50, 75, 100, 130, 150, 180, 200, 225, 250, 280, 300];
+
+// ── Emoji palette ─────────────────────────────────────────────────
+const EMOJIS = [
+  { e: '🍝', label: 'pasta' },
+  { e: '🍕', label: 'pizza' },
+  { e: '🍣', label: 'sushi' },
+  { e: '🌯', label: 'kebab' },
+  { e: '☕', label: 'coffee' },
+  { e: '🍻', label: 'drinks' },
+  { e: '🍦', label: 'icecream' },
+  { e: '🚕', label: 'taxi' },
+  { e: '🎬', label: 'movie' },
+  { e: '🌙', label: 'late nite' },
+  { e: '🛒', label: 'groceries' },
+  { e: '🍜', label: 'noodles' },
+  { e: '🧋', label: 'boba' },
+  { e: '🍩', label: 'donut' },
+  { e: '🥐', label: 'pastry' },
+  { e: '✈️', label: 'travel' },
+];
+
+// ── Personality archetypes (descriptive, not hierarchical) ────────
+// Archetypes describe tendencies — no archetype is "better" than another.
+// They are earned by behavior patterns, not by spending more.
+const PERSONALITIES = [
+  { id: 'snack-sponsor',     name: 'Snack Sponsor',         animal: '🐹', tag: 'keeps the little treats flowing',  color: '#FFD66B' },
+  { id: 'chaos-feeder',      name: 'Chaos Feeder',          animal: '🦝', tag: 'will buy 3am food. no questions',   color: '#C9B8F0' },
+  { id: 'taxi-hero',         name: 'Taxi Hero',             animal: '🚕', tag: 'rescues the squad from rain',        color: '#FFB59A' },
+  { id: 'coffee-goblin',     name: 'Coffee Goblin',         animal: '☕', tag: 'fueled the entire group chat',       color: '#B9E8C6' },
+  { id: 'midnight-provider', name: 'Midnight Provider',     animal: '🌙', tag: 'shows up when nobody else can',      color: '#A8D9F0' },
+  { id: 'sugar-parent',      name: 'Vacation Sugar Parent', animal: '🌴', tag: 'a vibe upgrade everywhere',          color: '#F49AC2' },
+  { id: 'group-dad',         name: 'Group Dad',             animal: '🐻', tag: 'has the cards, has the plan',        color: '#FFB59A' },
+  { id: 'tiny-treat-dealer', name: 'Tiny Treat Dealer',     animal: '🍪', tag: 'a +10 a day keeps the gloom away',   color: '#FFE3D4' },
+];
+
+// ── Friends ───────────────────────────────────────────────────────
+const FRIENDS = [
+  { id: 'alex',  name: 'Alex',  color: '#FFB59A', personality: 'taxi-hero',         vibe: 'carrying the vibe' },
+  { id: 'jamie', name: 'Jamie', color: '#C9B8F0', personality: 'chaos-feeder',      vibe: 'in goblin mode' },
+  { id: 'chris', name: 'Chris', color: '#B9E8C6', personality: 'group-dad',         vibe: 'feeling balanced' },
+  { id: 'rae',   name: 'Rae',   color: '#FFD66B', personality: 'coffee-goblin',     vibe: 'caffeinated' },
+  { id: 'sam',   name: 'Sam',   color: '#A8D9F0', personality: 'midnight-provider', vibe: 'glowing soft' },
+  { id: 'noor',  name: 'Noor',  color: '#F49AC2', personality: 'sugar-parent',      vibe: 'showing up for everyone' },
+];
+
+// ── Groups ────────────────────────────────────────────────────────
+const GROUPS = [
+  { id: 'roomies',  name: 'Roomies',     emoji: '🏠', members: ['alex','jamie','chris','rae'], vibe: 'tilted toward Alex lately' },
+  { id: 'lisbon',   name: 'Lisbon trip', emoji: '🌴', members: ['alex','noor','sam'],          vibe: 'nicely balanced' },
+  { id: 'gym-crew', name: 'Gym crew',    emoji: '🥤', members: ['chris','rae','sam'],          vibe: 'Chris has been picking it up' },
+];
+
+// ── Feed ──────────────────────────────────────────────────────────
+// daysAgo is used for decay calculations. Never expose this to users.
+const FEED = [
+  { id: 1, who: 'alex',  level: 50,  emoji: '🍝', note: 'spaghetti night',            when: '2h',   daysAgo: 0, group: 'roomies', selected: ['jamie','chris','rae'] },
+  { id: 2, who: 'jamie', level: 20,  emoji: '☕', note: 'office runs ☕☕☕',             when: '6h',   daysAgo: 0, group: null,      selected: ['alex','chris'] },
+  { id: 3, who: 'noor',  level: 130, emoji: '🍣', note: 'post-breakup sushi mission',  when: 'yest', daysAgo: 1, group: 'lisbon',  selected: ['alex','sam'] },
+  { id: 4, who: 'me',    level: 30,  emoji: '🌯', note: '3am kebab rescue 🌯',         when: 'yest', daysAgo: 1, group: null,      selected: ['jamie'] },
+  { id: 5, who: 'sam',   level: 10,  emoji: '🍪', note: 'tiny treat dealer in action', when: '2d',   daysAgo: 2, group: null,      selected: ['noor','rae'] },
+  { id: 6, who: 'chris', level: 75,  emoji: '🍕', note: 'movie + pizza',               when: '3d',   daysAgo: 3, group: 'roomies', selected: ['alex','jamie','rae'] },
+];
+
+
+// ── TILT STATE SYSTEM ─────────────────────────────────────────────
+//
+// Core invariant: raw scores are NEVER shown to users.
+// All UI uses these state labels. States describe recent patterns,
+// never obligations. Both "theirs" and "yours" states are framed
+// warmly — generosity is celebrated regardless of direction.
+//
+// Convention: "theirs" = they have been more generous recently
+//             "yours"  = you have been more generous recently
+//             Neither direction implies the other person "owes" anything.
+
+const TILT_STATES = {
+  DEEPLY_THEIRS: 'deeply_theirs',   // they've been especially generous lately
+  THEIRS:        'theirs',           // they've picked up more recently
+  GENTLY_THEIRS: 'gently_theirs',   // slight lean their way
+  BALANCED:      'balanced',         // roughly even — celebrate this
+  GENTLY_YOURS:  'gently_yours',    // slight lean your way
+  YOURS:         'yours',            // you've been picking it up
+  DEEPLY_YOURS:  'deeply_yours',    // you've been especially generous lately
+};
+
+// Bar widths for tilt visualisation — fractions, never shown as numbers.
+// Balanced = no fill. States grow toward edges. No "100% = you owe everything".
+const TILT_BAR_WIDTHS = {
+  [TILT_STATES.DEEPLY_THEIRS]: 0.82,
+  [TILT_STATES.THEIRS]:        0.55,
+  [TILT_STATES.GENTLY_THEIRS]: 0.28,
+  [TILT_STATES.BALANCED]:      0,
+  [TILT_STATES.GENTLY_YOURS]:  0.28,
+  [TILT_STATES.YOURS]:         0.55,
+  [TILT_STATES.DEEPLY_YOURS]:  0.82,
+};
+
+// Demo states for friends — replaces scattered tiltMap/tilts objects.
+// Using named states prevents magic numbers leaking into UI code.
+const DEMO_FRIEND_STATES = {
+  alex:  TILT_STATES.THEIRS,
+  jamie: TILT_STATES.GENTLY_YOURS,
+  chris: TILT_STATES.BALANCED,
+  rae:   TILT_STATES.BALANCED,
+  sam:   TILT_STATES.GENTLY_THEIRS,
+  noor:  TILT_STATES.DEEPLY_THEIRS,
+};
+
+// Demo group states per member — for GroupDetail vibe board.
+const DEMO_GROUP_MEMBER_STATES = {
+  alex:  TILT_STATES.THEIRS,
+  jamie: TILT_STATES.GENTLY_THEIRS,
+  chris: TILT_STATES.GENTLY_YOURS,
+  rae:   TILT_STATES.GENTLY_YOURS,
+  noor:  TILT_STATES.DEEPLY_THEIRS,
+  sam:   TILT_STATES.BALANCED,
+};
+
+
+// ── Time-decay model ──────────────────────────────────────────────
+//
+// Entries fade naturally over time. No single entry persists forever
+// as a "debt." This is the core mechanic that prevents the app from
+// becoming an accounting ledger.
+//
+// Weights are intentionally imprecise — close enough to feel fair,
+// fuzzy enough to prevent users from reverse-engineering exact values.
+
+const DECAY_TIERS = [
+  { maxDays: 7,  weight: 1.00 },  // this week: full weight
+  { maxDays: 30, weight: 0.60 },  // this month: substantial
+  { maxDays: 60, weight: 0.30 },  // last month: fading
+  { maxDays: 90, weight: 0.10 },  // two months ago: a whisper
+  // > 90 days: no contribution — acts as a natural soft reset
+];
+
+function getDecayWeight(daysAgo) {
+  for (const tier of DECAY_TIERS) {
+    if (daysAgo <= tier.maxDays) return tier.weight;
+  }
+  return 0;
+}
+
+// Compute a decayed tilt score between two people.
+// Positive = other person has been more generous recently.
+// Negative = you have been more generous recently.
+// INTERNAL ONLY — never display this number in the UI.
+function computeTiltScore(entries, fromId, toId) {
+  let score = 0;
+  for (const entry of entries) {
+    const decay = getDecayWeight(entry.daysAgo || 0);
+    if (decay === 0) continue;
+    const perPerson = entry.level / Math.max(entry.selected.length, 1);
+    if (entry.who === fromId && entry.selected.includes(toId)) {
+      score -= perPerson * decay;  // fromId treated toId (generous to them)
+    }
+    if (entry.who === toId && entry.selected.includes(fromId)) {
+      score += perPerson * decay;  // toId treated fromId (generous to me)
+    }
+  }
+  return score;
+}
+
+// Map a raw decayed score to a state bucket.
+// Thresholds are deliberately fuzzy — not mathematically precise.
+// Same score can land differently at different times (healthy ambiguity).
+function scoreToState(score) {
+  const abs = Math.abs(score);
+  const sign = score >= 0 ? 1 : -1;
+  if (abs < 10)  return TILT_STATES.BALANCED;
+  if (abs < 28)  return sign > 0 ? TILT_STATES.GENTLY_THEIRS : TILT_STATES.GENTLY_YOURS;
+  if (abs < 65)  return sign > 0 ? TILT_STATES.THEIRS        : TILT_STATES.YOURS;
+  return sign > 0 ? TILT_STATES.DEEPLY_THEIRS : TILT_STATES.DEEPLY_YOURS;
+}
+
+
+// ── Vibe phrase system ────────────────────────────────────────────
+//
+// All phrases describe recent patterns — NEVER obligations or debt.
+// Rules for writing new phrases:
+//   ✓ Describe what has happened recently
+//   ✓ Celebrate generosity in both directions warmly
+//   ✗ Never say "you owe", "they owe", "your turn", "pay back"
+//   ✗ Never use language that implies the other person is waiting
+//   ✗ Never create urgency or guilt
+
+const VIBE_PHRASES = {
+  [TILT_STATES.BALANCED]: [
+    'vibes are mutual lately ✨',
+    'nice and even right now',
+    'roughly balanced — lovely ✨',
+  ],
+  [TILT_STATES.GENTLY_THEIRS]: [
+    '{name} has been picking things up lately',
+    'a gentle lean toward {name} lately',
+    '{name} has been in a generous mood',
+  ],
+  [TILT_STATES.THEIRS]: [
+    '{name} has been carrying the vibe 🍜',
+    '{name} has been showing up lately',
+    '{name} has been generous lately',
+  ],
+  [TILT_STATES.DEEPLY_THEIRS]: [
+    '{name} has entered generous goblin mode 🦝',
+    '{name} has really been showing up for you 💛',
+    '{name} is carrying hard lately',
+  ],
+  [TILT_STATES.GENTLY_YOURS]: [
+    "you've been picking things up lately",
+    "a gentle lean your way lately",
+    "you've been in a giving mood",
+  ],
+  [TILT_STATES.YOURS]: [
+    "you've been carrying the vibe lately",
+    "you've been showing up ✨",
+    "your generosity is felt 💛",
+  ],
+  [TILT_STATES.DEEPLY_YOURS]: [
+    "you've really been showing up lately 💛",
+    "the squad noticed your energy",
+    "you've been in full treat mode",
+  ],
+};
+
+const STATE_BG_HINTS = {
+  [TILT_STATES.BALANCED]:      'calm',
+  [TILT_STATES.GENTLY_THEIRS]: 'warm',
+  [TILT_STATES.THEIRS]:        'warm',
+  [TILT_STATES.DEEPLY_THEIRS]: 'celebrate',
+  [TILT_STATES.GENTLY_YOURS]:  'warm',
+  [TILT_STATES.YOURS]:         'warm',
+  [TILT_STATES.DEEPLY_YOURS]:  'celebrate',
+};
+
+// Returns [phrase, bgHint].
+// state: a TILT_STATES value. name: the other person's name.
+function getVibePhrase(state, name = 'them') {
+  const opts = VIBE_PHRASES[state] || VIBE_PHRASES[TILT_STATES.BALANCED];
+  // Deterministic phrase choice per name — varied but stable across renders.
+  const idx = (name.length + (name.charCodeAt(0) || 0)) % opts.length;
+  const phrase = opts[idx].replace(/\{name\}/g, name);
+  return [phrase, STATE_BG_HINTS[state] || 'warm'];
+}
+
+// Legacy shim — callers that pass a raw numeric tiltAmount.
+// Maps to a state bucket first, so raw numbers never reach UI copy.
+function vibePhrase(tiltAmount, otherName) {
+  const state = scoreToState(tiltAmount);
+  return getVibePhrase(state, otherName);
+}
+
+
+// ── Helpers ───────────────────────────────────────────────────────
+function findFriend(id) {
+  if (id === 'me') return { id: 'me', name: 'You', color: '#FFE3D4' };
+  return FRIENDS.find(f => f.id === id) || { id, name: id, color: '#EEE' };
+}
+
+function findPersonality(id) {
+  return PERSONALITIES.find(p => p.id === id) || PERSONALITIES[0];
+}
+
+// Guardrail: only approved symbolic treat levels are valid.
+// Prevents exact-currency amounts from entering the system.
+function validateTreatLevel(level) {
+  if (!TREAT_LEVELS.includes(level)) {
+    console.warn('[Tilt guardrail] Rejected treat level:', level,
+      '— only symbolic levels are allowed:', TREAT_LEVELS.join(', '));
+    return false;
+  }
+  return true;
+}
+
+// Guardrail: only selected participants are affected by an entry.
+// Ensures group entries don't silently affect all members.
+function validateParticipantScope(entry) {
+  if (!entry.selected || entry.selected.length === 0) {
+    console.warn('[Tilt guardrail] Entry has no selected participants — tilt has no effect.');
+    return false;
+  }
+  if (!Array.isArray(entry.selected)) {
+    console.warn('[Tilt guardrail] entry.selected must be an array.');
+    return false;
+  }
+  return true;
+}
+
+
+Object.assign(window, {
+  TREAT_LEVELS, EMOJIS, PERSONALITIES, FRIENDS, GROUPS, FEED,
+  TILT_STATES, TILT_BAR_WIDTHS, DEMO_FRIEND_STATES, DEMO_GROUP_MEMBER_STATES,
+  DECAY_TIERS, getDecayWeight, computeTiltScore, scoreToState,
+  getVibePhrase, vibePhrase,
+  findFriend, findPersonality,
+  validateTreatLevel, validateParticipantScope,
+});
+</script>
+
+<script type="text/babel">
+// Tilt — Onboarding screens
+
+function Onboarding({ onDone, tone }) {
+  const [step, setStep] = React.useState(0);
+  const steps = [
+    {
+      mood: 'happy',
+      title: 'meet Til.',
+      sub: 'your soft little balance keeper.',
+      body: "Tilt isn't about debt. It's about keeping generosity fun.",
+      cta: 'continue',
+      bg: 'var(--warm)',
+    },
+    {
+      mood: 'excited',
+      title: 'no exact money.',
+      sub: 'no math. no guilt.',
+      body: 'You pick a fuzzy treat level — like +10 ☕ or +50 🍝 — and Til feels the vibes for you.',
+      cta: 'love it',
+      bg: 'var(--calm)',
+    },
+    {
+      mood: 'proud',
+      title: 'the squad tilts.',
+      sub: 'back and forth, gently.',
+      body: 'When one friend has been carrying lately, Til whispers — never nags. You spoil them back when you want.',
+      cta: 'let me in',
+      bg: 'var(--celebrate)',
+    },
+  ];
+  const s = steps[step];
+  return (
+    <div className="tilt-screen no-tabs no-status" style={{
+      background: s.bg,
+      paddingTop: 100,
+      display: 'flex', flexDirection: 'column',
+      height: '100%',
+    }}>
+      {/* progress dots */}
+      <div style={{
+        position: 'absolute', top: 64, left: 0, right: 0,
+        display: 'flex', justifyContent: 'center', gap: 8,
+      }}>
+        {steps.map((_, i) => (
+          <div key={i} style={{
+            width: i === step ? 28 : 8, height: 8,
+            background: i <= step ? 'var(--ink)' : 'rgba(42,31,26,0.18)',
+            borderRadius: 999,
+            transition: 'all 0.3s cubic-bezier(.34,1.56,.64,1)',
+          }} />
+        ))}
+      </div>
+
+      {/* Mascot */}
+      <div className="screen-in" key={step} style={{
+        display: 'flex', justifyContent: 'center', marginTop: 40,
+      }}>
+        <Til mood={s.mood} size={180} color="#FFB59A" />
+      </div>
+
+      {/* Text */}
+      <div className="screen-in" key={'t' + step} style={{
+        padding: '40px 32px 0', textAlign: 'center',
+      }}>
+        <div className="t-display" style={{ fontSize: 44, marginBottom: 4 }}>{s.title}</div>
+        <div className="t-serif" style={{ fontSize: 26, color: 'var(--ink-2)', marginBottom: 18 }}>{s.sub}</div>
+        <div style={{ fontSize: 16, lineHeight: 1.45, color: 'var(--ink-2)', maxWidth: 300, margin: '0 auto' }}>{s.body}</div>
+      </div>
+
+      <div style={{ flex: 1 }} />
+
+      <div style={{ padding: '0 24px 60px' }}>
+        <button className="btn btn-primary btn-block" onClick={() => {
+          if (step < steps.length - 1) setStep(step + 1);
+          else onDone();
+        }}>{s.cta}</button>
+        {step < steps.length - 1 && (
+          <button onClick={onDone} style={{
+            display: 'block', margin: '14px auto 0',
+            background: 'none', border: 'none',
+            color: 'var(--ink-2)', fontSize: 14, fontWeight: 600,
+            cursor: 'pointer',
+          }}>skip the intro</button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, { Onboarding });
+</script>
+
+<script type="text/babel">
+// Tilt — Home screen (feed + your tilt status + mascot whisper)
+
+function Home({ nav, tone }) {
+  const [whisper] = getVibePhrase(DEMO_FRIEND_STATES.alex || TILT_STATES.THEIRS, 'Alex');
+  const [thanked, setThanked] = React.useState(false);
+
+  return (
+    <div className="tilt-screen">
+      {/* Top: greeting + mascot whisper */}
+      <div style={{ padding: '8px 20px 0' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+          <div>
+            <div className="t-serif" style={{ fontSize: 26, lineHeight: 1.15, color: 'var(--ink-2)', marginBottom: 2 }}>good evening,</div>
+            <div className="t-display" style={{ fontSize: 36, lineHeight: 1, marginTop: 0 }}>Robin 👋</div>
+          </div>
+          <button onClick={() => nav('notifications')} style={{
+            border: 'none', background: 'var(--bg-card)',
+            width: 44, height: 44, borderRadius: 22,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 20, cursor: 'pointer',
+            boxShadow: 'var(--shadow-1)',
+            position: 'relative',
+          }}>
+            <span>🔔</span>
+            <span style={{
+              position: 'absolute', top: 8, right: 10,
+              width: 8, height: 8, borderRadius: '50%',
+              background: 'var(--peach-deep)',
+              boxShadow: '0 0 0 2px var(--bg-card)',
+            }} />
+          </button>
+        </div>
+
+        {/* Whisper card from Til */}
+        <div className="card screen-in" style={{
+          background: 'var(--warm)',
+          padding: 16,
+          marginTop: 14,
+          display: 'flex', alignItems: 'center', gap: 14,
+          cursor: 'pointer',
+        }} onClick={() => nav('mascot')}>
+          <Til mood="curious" size={64} color="#FFB59A" />
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ink-3)', marginBottom: 4 }}>til whispers</div>
+            <div style={{ fontSize: 15, fontWeight: 600, lineHeight: 1.3, color: 'var(--ink)' }}>{whisper}</div>
+          </div>
+        </div>
+
+        {/* Spoiled-you moment — emotional hero */}
+        <SpoiledCard thanked={thanked} setThanked={setThanked} />
+      </div>
+
+      {/* Your tilt summary — horizontal scroll of friend balances */}
+      <div style={{ marginTop: 22 }}>
+        <div style={{ padding: '0 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+          <div className="section-title">vibe balance</div>
+          <button onClick={() => nav('friends')} style={{ background: 'none', border: 'none', fontSize: 13, fontWeight: 600, color: 'var(--ink-2)' }}>see all</button>
+        </div>
+        <div style={{ display: 'flex', gap: 10, padding: '0 20px', overflowX: 'auto' }} className="scroll">
+          {FRIENDS.map(f => <FriendTilt key={f.id} friend={f} nav={nav} />)}
+        </div>
+      </div>
+
+      {/* Groups */}
+      <div style={{ marginTop: 22 }}>
+        <div style={{ padding: '0 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+          <div className="section-title">your groups</div>
+          <button onClick={() => nav('groups')} style={{ background: 'none', border: 'none', fontSize: 13, fontWeight: 600, color: 'var(--ink-2)' }}>see all</button>
+        </div>
+        <div style={{ display: 'flex', gap: 10, padding: '0 20px', overflowX: 'auto' }} className="scroll">
+          {GROUPS.map(g => (
+            <button key={g.id} onClick={() => nav('group', g.id)} style={{
+              flexShrink: 0,
+              width: 160,
+              border: 'none', cursor: 'pointer',
+              background: 'var(--bg-card)',
+              borderRadius: 20,
+              padding: 14,
+              textAlign: 'left',
+              boxShadow: 'var(--shadow-1)',
+            }}>
+              <div style={{ fontSize: 28, marginBottom: 6 }}>{g.emoji}</div>
+              <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 16, marginBottom: 2 }}>{g.name}</div>
+              <div style={{ fontSize: 12, color: 'var(--ink-3)' }}>{g.members.length} people</div>
+              <div style={{ marginTop: 10, fontSize: 11, fontWeight: 600, color: 'var(--ink-2)', background: 'var(--bg)', padding: '4px 8px', borderRadius: 999, display: 'inline-block' }}>{g.vibe}</div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Feed */}
+      <div style={{ marginTop: 24, padding: '0 20px' }}>
+        <div className="section-title">recent treats</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {FEED.map(item => <FeedItem key={item.id} item={item} />)}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FriendTilt({ friend, nav }) {
+  const state = DEMO_FRIEND_STATES[friend.id] || TILT_STATES.BALANCED;
+  const isTheirs = state.includes('theirs');
+  const barWidth = TILT_BAR_WIDTHS[state] || 0;
+  const label = state === TILT_STATES.BALANCED
+    ? 'balanced ✨'
+    : isTheirs
+    ? "they've been generous"
+    : "you've been generous";
+  return (
+    <button onClick={() => nav('friend', friend.id)} style={{
+      flexShrink: 0,
+      width: 132,
+      border: 'none', cursor: 'pointer',
+      background: 'var(--bg-card)',
+      borderRadius: 20, padding: 12,
+      boxShadow: 'var(--shadow-1)',
+      display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 8,
+    }}>
+      <FriendAvatar name={friend.name} color={friend.color} size={44} />
+      <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 16 }}>{friend.name}</div>
+      {/* Mini tilt indicator — state-based width, no raw numbers */}
+      <div style={{ width: '100%', height: 6, background: 'var(--bg)', borderRadius: 999, position: 'relative', overflow: 'hidden' }}>
+        <div style={{
+          position: 'absolute',
+          left: isTheirs ? '50%' : `${(0.5 - barWidth * 0.5) * 100}%`,
+          width: `${barWidth * 50}%`,
+          top: 0, bottom: 0,
+          background: isTheirs ? 'var(--lavender-deep)' : 'var(--peach-deep)',
+          borderRadius: 999,
+        }} />
+        <div style={{
+          position: 'absolute', left: '50%', top: -1, bottom: -1,
+          width: 2, background: 'var(--ink-3)', opacity: 0.4,
+        }} />
+      </div>
+      <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--ink-3)' }}>{label}</div>
+    </button>
+  );
+}
+
+function FeedItem({ item }) {
+  const who = findFriend(item.who);
+  const isYou = item.who === 'me';
+  const [reactions, setReactions] = React.useState([]);
+  const [hearted, setHearted] = React.useState(false);
+
+  const burst = () => {
+    if (isYou) return; // can't react to your own
+    const emojis = ['💛', '✨', '🥹', '🫶', '💫'];
+    const e = emojis[Math.floor(Math.random() * emojis.length)];
+    const id = Date.now() + Math.random();
+    setReactions(prev => [...prev, { id, e, x: 20 + Math.random() * 16 }]);
+    setHearted(true);
+    setTimeout(() => setReactions(prev => prev.filter(r => r.id !== id)), 1700);
+  };
+
+  return (
+    <div className="card" style={{ display: 'flex', gap: 12, alignItems: 'flex-start', padding: 14, position: 'relative' }}>
+      <FriendAvatar name={who.name} color={who.color} size={40} />
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginBottom: 2 }}>
+          <span style={{ fontWeight: 700, fontSize: 15 }}>{isYou ? 'You' : who.name}</span>
+          <span style={{ fontSize: 12, color: 'var(--ink-3)' }}>· {item.when}</span>
+        </div>
+        <div style={{ fontSize: 14, color: 'var(--ink-2)', marginBottom: 8 }}>{item.note}</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+          <span className="treat-pill" style={{
+            background: item.emoji ? 'var(--peach-soft)' : 'var(--bg)',
+            color: 'var(--ink)',
+            fontSize: 14, padding: '6px 12px',
+          }}>
+            <span>+{item.level}</span><span>{item.emoji}</span>
+          </span>
+          <span style={{ fontSize: 12, color: 'var(--ink-3)' }}>for {item.selected.map(id => findFriend(id).name).join(', ')}</span>
+        </div>
+      </div>
+      <div style={{ position: 'relative', flexShrink: 0 }}>
+        <button onClick={burst} style={{
+          border: 'none',
+          background: hearted ? 'var(--peach-soft)' : 'var(--bg)',
+          width: 36, height: 36, borderRadius: 18,
+          fontSize: 16, cursor: 'pointer',
+          transition: 'all 0.2s cubic-bezier(.34,1.56,.64,1)',
+          transform: hearted ? 'scale(1.08)' : 'scale(1)',
+        }}>💛</button>
+        {reactions.map(r => (
+          <span key={r.id} style={{
+            position: 'absolute', bottom: 18, left: r.x,
+            fontSize: 22, pointerEvents: 'none',
+            animation: 'float-up 1.6s ease-out forwards',
+          }}>{r.e}</span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// "You've been spoiled" — emotional hero card that appears when someone
+// has treated you recently. One-tap thanks reaction with mascot reaction.
+function SpoiledCard({ thanked, setThanked }) {
+  const [bursts, setBursts] = React.useState([]);
+
+  const sayThanks = () => {
+    if (thanked) return;
+    const emojis = ['💛', '✨', '🫶', '🥹', '💫', '🌷'];
+    const newBursts = emojis.map((e, i) => ({ id: Date.now() + i, e, x: 10 + i * 16, delay: i * 0.06 }));
+    setBursts(newBursts);
+    setThanked(true);
+    setTimeout(() => setBursts([]), 1800);
+  };
+
+  return (
+    <div style={{
+      marginTop: 12,
+      background: 'linear-gradient(135deg, #FFE3D4 0%, #FCD9E8 60%, #ECE3FF 100%)',
+      borderRadius: 24,
+      padding: 16,
+      position: 'relative',
+      overflow: 'hidden',
+      boxShadow: 'var(--shadow-1)',
+    }}>
+      <div style={{ position: 'absolute', top: -10, right: -8, fontSize: 56, opacity: 0.18, transform: 'rotate(14deg)' }}>🍣</div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, position: 'relative' }}>
+        <div style={{
+          width: 52, height: 52, borderRadius: 18,
+          background: 'rgba(255,255,255,0.6)',
+          backdropFilter: 'blur(10px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: 28,
+          flexShrink: 0,
+        }}>🍣</div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ink-3)', marginBottom: 2 }}>noor treated you 💛</div>
+          <div style={{ fontSize: 15, fontWeight: 700, lineHeight: 1.25, color: 'var(--ink)' }}>Noor treated you to sushi 🍣</div>
+          <div style={{ fontSize: 12, color: 'var(--ink-2)', marginTop: 2 }}>"post-breakup sushi mission" — 1h ago</div>
+        </div>
+      </div>
+      <div style={{ marginTop: 12, display: 'flex', gap: 8, position: 'relative' }}>
+        <button onClick={sayThanks} style={{
+          flex: 1,
+          border: 'none', cursor: 'pointer',
+          padding: '12px 14px', borderRadius: 999,
+          background: thanked ? 'rgba(255,255,255,0.55)' : 'var(--ink)',
+          color: thanked ? 'var(--ink)' : '#FFF8EE',
+          fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: 14,
+          transition: 'all 0.25s cubic-bezier(.34,1.56,.64,1)',
+          transform: thanked ? 'scale(0.98)' : 'scale(1)',
+        }}>
+          {thanked ? '💛 sent — Noor will feel it' : 'say thanks 🫶'}
+        </button>
+        <button style={{
+          border: 'none', cursor: 'pointer',
+          padding: '12px 16px', borderRadius: 999,
+          background: 'rgba(255,255,255,0.55)',
+          backdropFilter: 'blur(10px)',
+          color: 'var(--ink)',
+          fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: 14,
+        }}>treat them too 🍜</button>
+        {bursts.map(b => (
+          <span key={b.id} style={{
+            position: 'absolute', bottom: 40, left: b.x,
+            fontSize: 24, pointerEvents: 'none',
+            animation: `float-up 1.7s ease-out ${b.delay}s forwards`,
+            opacity: 0,
+          }}>{b.e}</span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, { Home, FeedItem });
+</script>
+
+<script type="text/babel">
+// Tilt — Log a Treat (modal-style flow)
+
+function LogTreat({ onClose, onLog, tone }) {
+  const [level, setLevel] = React.useState(50);
+  const [emoji, setEmoji] = React.useState('🍝');
+  const [note, setNote] = React.useState('');
+  const [selected, setSelected] = React.useState(['alex', 'jamie']);
+  const [showCelebrate, setShowCelebrate] = React.useState(false);
+
+  const toggleFriend = (id) => {
+    setSelected(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+  };
+
+  const submit = () => {
+    setShowCelebrate(true);
+    setTimeout(() => { onLog && onLog({ level, emoji, note, selected }); onClose(); }, 1500);
+  };
+
+  if (showCelebrate) {
+    return <Celebration level={level} emoji={emoji} count={selected.length} />;
+  }
+
+  return (
+    <div className="tilt-screen no-tabs" style={{
+      background: 'var(--bg)', padding: 0,
+      display: 'flex', flexDirection: 'column',
+    }}>
+      {/* Header */}
+      <div style={{
+        padding: '60px 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      }}>
+        <button onClick={onClose} style={{
+          border: 'none', background: 'var(--bg-card)',
+          width: 40, height: 40, borderRadius: 20,
+          fontSize: 18, cursor: 'pointer',
+          boxShadow: 'var(--shadow-1)',
+        }}>✕</button>
+        <div className="t-display" style={{ fontSize: 18 }}>spread a treat</div>
+        <div style={{ width: 40 }} />
+      </div>
+
+      <div className="scroll" style={{ flex: 1, padding: '12px 20px 32px' }}>
+        {/* Emoji + level preview */}
+        <div style={{
+          textAlign: 'center', padding: '20px 0 16px',
+        }}>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            width: 116, height: 116, borderRadius: '40% 60% 50% 50% / 60% 40% 60% 40%',
+            background: 'var(--peach-soft)',
+            fontSize: 64,
+            boxShadow: 'inset 0 -6px 0 rgba(0,0,0,0.05)',
+            animation: 'pop 0.4s cubic-bezier(.34,1.56,.64,1)',
+          }} key={emoji}>{emoji}</div>
+          <div style={{ marginTop: 16, fontFamily: 'var(--font-display)', fontSize: 56, fontWeight: 700, lineHeight: 1, letterSpacing: '-0.02em' }} key={level}>
+            +{level}
+          </div>
+          <div className="t-serif" style={{ fontSize: 18, color: 'var(--ink-2)', marginTop: 4 }}>treat units, vibes only</div>
+        </div>
+
+        {/* Treat level picker */}
+        <div className="section-title" style={{ marginTop: 16 }}>treat level</div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+          {TREAT_LEVELS.map(v => (
+            <button key={v} onClick={() => setLevel(v)} className="treat-pill" style={{
+              background: level === v ? 'var(--ink)' : 'var(--bg-card)',
+              color: level === v ? '#FFF8EE' : 'var(--ink)',
+              border: 'none', cursor: 'pointer',
+              boxShadow: level === v ? 'var(--shadow-pop)' : 'var(--shadow-1)',
+              transform: level === v ? 'scale(1.05)' : 'scale(1)',
+              transition: 'all 0.2s cubic-bezier(.34,1.56,.64,1)',
+            }}>+{v}</button>
+          ))}
+        </div>
+
+        {/* Emoji picker */}
+        <div className="section-title" style={{ marginTop: 22 }}>what was it</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gap: 6 }}>
+          {EMOJIS.map(({ e }) => (
+            <button key={e} onClick={() => setEmoji(e)} style={{
+              border: 'none',
+              aspectRatio: '1 / 1',
+              borderRadius: 14,
+              background: emoji === e ? 'var(--peach-soft)' : 'var(--bg-card)',
+              fontSize: 22, cursor: 'pointer',
+              boxShadow: emoji === e ? 'inset 0 0 0 2px var(--peach-deep)' : 'var(--shadow-1)',
+              transition: 'all 0.15s',
+            }}>{e}</button>
+          ))}
+        </div>
+
+        {/* Note */}
+        <div className="section-title" style={{ marginTop: 22 }}>moment</div>
+        <div style={{
+          background: 'var(--bg-card)', borderRadius: 18, padding: 14,
+          boxShadow: 'var(--shadow-1)',
+        }}>
+          <input
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="3am kebab rescue 🌯"
+            style={{
+              border: 'none', outline: 'none',
+              width: '100%', fontSize: 15, fontFamily: 'var(--font-body)',
+              background: 'transparent', color: 'var(--ink)',
+            }} />
+          <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+            <button className="chip" style={{ border: 'none', cursor: 'pointer' }}>📸 photo</button>
+            <button className="chip" style={{ border: 'none', cursor: 'pointer' }}>📍 here</button>
+          </div>
+        </div>
+
+        {/* Friends */}
+        <div className="section-title" style={{ marginTop: 22 }}>
+          treating · {selected.length} {selected.length === 1 ? 'friend' : 'friends'}
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {FRIENDS.map(f => (
+            <button key={f.id} onClick={() => toggleFriend(f.id)} style={{
+              border: 'none', cursor: 'pointer',
+              display: 'flex', alignItems: 'center', gap: 12,
+              padding: 12,
+              background: 'var(--bg-card)',
+              borderRadius: 16,
+              boxShadow: 'var(--shadow-1)',
+              textAlign: 'left',
+            }}>
+              <FriendAvatar name={f.name} color={f.color} size={36} />
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 700, fontSize: 14 }}>{f.name}</div>
+                <div style={{ fontSize: 12, color: 'var(--ink-3)' }}>{f.vibe}</div>
+              </div>
+              <div style={{
+                width: 24, height: 24, borderRadius: 12,
+                background: selected.includes(f.id) ? 'var(--ink)' : 'transparent',
+                border: selected.includes(f.id) ? 'none' : '2px solid var(--hairline-2)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: '#FFF8EE', fontSize: 14, fontWeight: 700,
+              }}>{selected.includes(f.id) ? '✓' : ''}</div>
+            </button>
+          ))}
+        </div>
+
+        <div style={{ height: 16 }} />
+      </div>
+
+      {/* Bottom CTA */}
+      <div style={{
+        padding: '16px 20px 36px',
+        background: 'linear-gradient(180deg, transparent 0%, var(--bg) 30%)',
+      }}>
+        <button onClick={submit} className="btn btn-primary btn-block" disabled={selected.length === 0}
+          style={{ opacity: selected.length === 0 ? 0.5 : 1 }}>
+          spread the +{level} {emoji} →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function Celebration({ level, emoji, count }) {
+  const colors = ['#FFD66B', '#FFB59A', '#F49AC2', '#C9B8F0', '#B9E8C6', '#A8D9F0'];
+  return (
+    <div className="tilt-screen no-tabs no-status" style={{
+      background: 'var(--celebrate)',
+      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+      padding: 24,
+      overflow: 'hidden',
+      height: '100%',
+    }}>
+      {/* confetti */}
+      {Array.from({ length: 24 }).map((_, i) => (
+        <div key={i} className="dot" style={{
+          left: `${10 + (i * 73) % 80}%`,
+          bottom: 100,
+          background: colors[i % colors.length],
+          animationDelay: `${(i % 8) * 0.07}s`,
+          animationDuration: `${1.2 + (i % 4) * 0.2}s`,
+        }} />
+      ))}
+      <Til mood="excited" size={200} color="#FFB59A" />
+      <div className="t-display" style={{ fontSize: 36, marginTop: 24, textAlign: 'center', lineHeight: 1.05 }}>
+        +{level} {emoji} sent!
+      </div>
+      <div className="t-serif" style={{ fontSize: 22, color: 'var(--ink-2)', marginTop: 8, textAlign: 'center' }}>
+        the squad will remember this 💛
+      </div>
+      <div style={{ marginTop: 20, padding: '10px 16px', background: 'rgba(255,255,255,0.6)', borderRadius: 999, backdropFilter: 'blur(10px)' }}>
+        <span style={{ fontSize: 13, fontWeight: 600 }}>treating {count} {count === 1 ? 'friend' : 'friends'}</span>
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, { LogTreat });
+</script>
+
+<script type="text/babel">
+// Tilt — secondary screens: Group, Friend, Mascot, Personality, Recap, Notifications
+
+// ── Group detail ─────────────────────────────────────────────
+function GroupDetail({ groupId, nav }) {
+  const g = GROUPS.find(x => x.id === groupId) || GROUPS[0];
+  const members = g.members.map(id => findFriend(id));
+  // demo tilts
+  const tiltMap = DEMO_GROUP_MEMBER_STATES;
+
+  const groupFeed = FEED.filter(f => f.group === g.id);
+
+  return (
+    <div className="tilt-screen" style={{ padding: 0 }}>
+      {/* Hero header */}
+      <div style={{
+        background: 'var(--warm)',
+        padding: '70px 20px 28px',
+        borderRadius: '0 0 32px 32px',
+        position: 'relative',
+      }}>
+        <button onClick={() => nav('home')} style={{
+          border: 'none', background: 'rgba(255,255,255,0.7)',
+          width: 40, height: 40, borderRadius: 20, fontSize: 18,
+          cursor: 'pointer', backdropFilter: 'blur(10px)',
+        }}>←</button>
+        <div style={{ marginTop: 14, display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ fontSize: 56 }}>{g.emoji}</div>
+          <div>
+            <div className="t-display" style={{ fontSize: 32, lineHeight: 1 }}>{g.name}</div>
+            <div style={{ fontSize: 13, color: 'var(--ink-2)', marginTop: 4 }}>{members.length} people · {g.vibe}</div>
+          </div>
+        </div>
+
+        {/* members */}
+        <div style={{ display: 'flex', gap: -8, marginTop: 16 }}>
+          {members.map((m, i) => (
+            <div key={m.id} style={{ marginLeft: i === 0 ? 0 : -12, border: '3px solid var(--bg)', borderRadius: '50%' }}>
+              <FriendAvatar name={m.name} color={m.color} size={40} />
+            </div>
+          ))}
+          <button style={{
+            marginLeft: 8, width: 40, height: 40,
+            border: 'none', borderRadius: 20,
+            background: 'rgba(255,255,255,0.7)',
+            fontSize: 22, cursor: 'pointer',
+            color: 'var(--ink-2)',
+          }}>+</button>
+        </div>
+      </div>
+
+      {/* Vibe board */}
+      <div style={{ padding: '20px 20px 0' }}>
+        <div className="section-title">vibe board</div>
+        <div className="card" style={{ padding: 16 }}>
+          {members.map(m => {
+            const t = tiltMap[m.id] || TILT_STATES.BALANCED;
+            const phrase = t === TILT_STATES.BALANCED ? '✨ balanced' : t.includes('theirs') ? 'has been generous lately' : 'has been treated lately';
+            return (
+              <div key={m.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: '1px solid var(--hairline)' }}>
+                <FriendAvatar name={m.name} color={m.color} size={36} />
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 700, fontSize: 14 }}>{m.name}</div>
+                  <div style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 2 }}>{phrase}</div>
+                </div>
+                <GroupTiltBar state={t} />
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Group whisper */}
+        <div className="card" style={{
+          background: 'var(--calm)',
+          marginTop: 14,
+          display: 'flex', alignItems: 'center', gap: 12,
+          padding: 14,
+        }}>
+          <div style={{ fontSize: 28 }}>🍜</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ink-3)' }}>til whispers</div>
+            <div style={{ fontSize: 14, fontWeight: 600, marginTop: 2 }}>Noor's been carrying. Anyone got snack energy?</div>
+          </div>
+        </div>
+
+        {/* feed */}
+        <div className="section-title" style={{ marginTop: 22 }}>moments</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {groupFeed.length === 0 && (
+            <div style={{ padding: 24, textAlign: 'center', color: 'var(--ink-3)', fontSize: 14 }}>
+              No moments yet. Be the first to spread a treat ✨
+            </div>
+          )}
+          {groupFeed.map(item => <FeedItem key={item.id} item={item} />)}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function GroupTiltBar({ state }) {
+  const s = state || TILT_STATES.BALANCED;
+  const isTheirs = s.includes('theirs');
+  const barWidth = TILT_BAR_WIDTHS[s] || 0;
+  return (
+    <div style={{ width: 76, height: 6, background: 'var(--bg)', borderRadius: 999, position: 'relative', overflow: 'hidden' }}>
+      <div style={{
+        position: 'absolute',
+        left: isTheirs ? '50%' : `${(0.5 - barWidth * 0.5) * 100}%`,
+        width: `${barWidth * 50}%`,
+        top: 0, bottom: 0,
+        background: isTheirs ? 'var(--peach-deep)' : 'var(--lavender-deep)',
+        borderRadius: 999,
+      }} />
+      <div style={{ position: 'absolute', left: '50%', top: -1, bottom: -1, width: 1.5, background: 'rgba(0,0,0,0.2)' }} />
+    </div>
+  );
+}
+
+// ── Friend detail ────────────────────────────────────────────
+function FriendDetail({ friendId, nav }) {
+  const f = findFriend(friendId);
+  const personality = findPersonality(f.personality);
+  const state = DEMO_FRIEND_STATES[f.id] || TILT_STATES.BALANCED;
+  const [phrase] = getVibePhrase(state, f.name);
+  const barWidth = TILT_BAR_WIDTHS[state] || 0;
+  const towardThem = state.includes('theirs');
+
+  return (
+    <div className="tilt-screen" style={{ padding: 0 }}>
+      <div style={{
+        background: f.color + '55',
+        padding: '70px 20px 28px',
+        borderRadius: '0 0 32px 32px',
+      }}>
+        <button onClick={() => nav('home')} style={{
+          border: 'none', background: 'rgba(255,255,255,0.7)',
+          width: 40, height: 40, borderRadius: 20, fontSize: 18,
+          cursor: 'pointer', backdropFilter: 'blur(10px)',
+        }}>←</button>
+
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginTop: 6 }}>
+          <FriendAvatar name={f.name} color={f.color} size={84} />
+          <div className="t-display" style={{ fontSize: 32, marginTop: 8 }}>{f.name}</div>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 6, padding: '6px 12px', background: 'rgba(255,255,255,0.7)', borderRadius: 999, fontSize: 12, fontWeight: 600 }}>
+            <span>{personality.animal}</span><span>{personality.name}</span>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ padding: '20px 20px 0' }}>
+        {/* Big tilt visual */}
+        <div className="card" style={{ padding: 20, textAlign: 'center' }}>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ink-3)' }}>balance vibes</div>
+          <div className="t-display" style={{ fontSize: 24, marginTop: 6, lineHeight: 1.1 }}>{phrase}</div>
+          <div style={{
+            height: 18, marginTop: 16,
+            background: 'var(--bg)', borderRadius: 999,
+            position: 'relative', overflow: 'hidden',
+          }}>
+            <div style={{
+              position: 'absolute',
+              left: towardThem ? '50%' : `${(0.5 - barWidth * 0.5) * 100}%`,
+              width: `${barWidth * 50}%`,
+              top: 0, bottom: 0,
+              background: towardThem ? 'linear-gradient(90deg, var(--peach), var(--peach-deep))' : 'linear-gradient(90deg, var(--lavender-deep), var(--lavender))',
+              borderRadius: 999,
+            }} />
+            <div style={{ position: 'absolute', left: '50%', top: -2, bottom: -2, width: 2, background: 'var(--ink)' }} />
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, fontSize: 11, fontWeight: 600, color: 'var(--ink-3)' }}>
+            <span>your turn ←</span>
+            <span>→ {f.name}'s turn</span>
+          </div>
+        </div>
+
+        {/* streak */}
+        <div className="card" style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 14, padding: 16 }}>
+          <div style={{
+            width: 52, height: 52, borderRadius: 16,
+            background: 'var(--mint-soft)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 28,
+          }}>🌱</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18 }}>been treating each other</div>
+            <div style={{ fontSize: 12, color: 'var(--ink-3)' }}>a nice rhythm together for about 3 months</div>
+          </div>
+        </div>
+
+        <div className="section-title" style={{ marginTop: 18 }}>moments together</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {FEED.slice(0, 4).map(item => <FeedItem key={item.id} item={item} />)}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Mascot screen ───────────────────────────────────────────
+function MascotScreen({ nav }) {
+  const [mood, setMood] = React.useState('happy');
+  const moods = ['happy', 'excited', 'sleepy', 'concerned', 'dramatic', 'proud', 'curious'];
+
+  const stats = [
+    { label: 'affection', value: 78, color: 'var(--peach-deep)', emoji: '💛' },
+    { label: 'rhythm', value: 78, color: 'var(--mint-deep)', emoji: '🌱' },
+    { label: 'squad vibes', value: 64, color: 'var(--mint-deep)', emoji: '✨' },
+  ];
+
+  return (
+    <div className="tilt-screen" style={{ background: 'var(--warm)', padding: 0 }}>
+      <div style={{ padding: '60px 20px 0', display: 'flex', justifyContent: 'space-between' }}>
+        <button onClick={() => nav('home')} style={{
+          border: 'none', background: 'rgba(255,255,255,0.7)',
+          width: 40, height: 40, borderRadius: 20, fontSize: 18,
+          cursor: 'pointer', backdropFilter: 'blur(10px)',
+        }}>←</button>
+        <button style={{
+          border: 'none', background: 'rgba(255,255,255,0.7)',
+          padding: '8px 14px', borderRadius: 999, fontSize: 13, fontWeight: 600,
+          cursor: 'pointer', backdropFilter: 'blur(10px)',
+        }}>customize ✨</button>
+      </div>
+
+      {/* Mascot stage */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 20 }}>
+        <div style={{
+          width: 240, height: 240, borderRadius: '50%',
+          background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.7), rgba(255,255,255,0.2))',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          position: 'relative',
+        }}>
+          <Til mood={mood} size={200} color="#FFB59A" />
+          <div className="sparkle" style={{ top: 24, left: 20, fontSize: 24 }}>✨</div>
+          <div className="sparkle" style={{ bottom: 30, right: 20, fontSize: 18, animationDelay: '0.5s' }}>💛</div>
+          <div className="sparkle" style={{ top: 60, right: 16, fontSize: 16, animationDelay: '1.2s' }}>·</div>
+        </div>
+        <div className="t-display" style={{ fontSize: 36, marginTop: 12 }}>Til</div>
+        <div className="t-serif" style={{ fontSize: 20, color: 'var(--ink-2)', marginTop: 0 }}>your balance keeper</div>
+      </div>
+
+      {/* Til says */}
+      <div style={{ padding: '20px 20px 0' }}>
+        <div className="card" style={{
+          padding: 16,
+          background: 'var(--bg-card)',
+          position: 'relative',
+        }}>
+          <div style={{
+            position: 'absolute', top: -8, left: 28,
+            width: 16, height: 16, background: 'var(--bg-card)',
+            transform: 'rotate(45deg)',
+          }} />
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--ink-3)', marginBottom: 4 }}>til says</div>
+          <div style={{ fontSize: 16, fontWeight: 600, lineHeight: 1.3 }}>You've been spreading +20s like confetti this week. The squad noticed 💛</div>
+        </div>
+
+        {/* Stats */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 14 }}>
+          {stats.map(s => (
+            <div key={s.label} className="card" style={{ padding: 14, display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ fontSize: 24 }}>{s.emoji}</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                  <span style={{ fontWeight: 700, fontSize: 14 }}>{s.label}</span>
+                  <span style={{ fontWeight: 700, fontSize: 14, color: s.color }}>{s.value}%</span>
+                </div>
+                <div style={{ height: 6, background: 'var(--bg)', borderRadius: 999, overflow: 'hidden' }}>
+                  <div style={{ width: `${s.value}%`, height: '100%', background: s.color, borderRadius: 999 }} />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* mood picker — demo */}
+        <div className="section-title" style={{ marginTop: 18 }}>til's moods (try a few)</div>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          {moods.map(m => (
+            <button key={m} onClick={() => setMood(m)} className="chip" style={{
+              border: 'none', cursor: 'pointer',
+              background: mood === m ? 'var(--ink)' : 'var(--bg-card)',
+              color: mood === m ? '#FFF8EE' : 'var(--ink-2)',
+            }}>{m}</button>
+          ))}
+        </div>
+
+        <div style={{ height: 24 }} />
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, { GroupDetail, FriendDetail, MascotScreen });
+</script>
+
+<script type="text/babel">
+// Tilt — Personality, Recap, Notifications, Friends list
+
+// ── Personality card / archetype ─────────────────────────────
+function PersonalityScreen({ nav }) {
+  const mine = findPersonality('tiny-treat-dealer'); // demo: user's current
+  const others = PERSONALITIES.filter(p => p.id !== mine.id);
+
+  return (
+    <div className="tilt-screen" style={{ padding: 0 }}>
+      <div style={{ padding: '60px 20px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
+        <button onClick={() => nav('home')} style={{
+          border: 'none', background: 'var(--bg-card)',
+          width: 40, height: 40, borderRadius: 20, fontSize: 18, cursor: 'pointer',
+          boxShadow: 'var(--shadow-1)',
+        }}>←</button>
+        <div className="t-display" style={{ fontSize: 24 }}>your archetype</div>
+      </div>
+
+      {/* Big card */}
+      <div style={{ padding: '8px 20px 0' }}>
+        <div style={{
+          background: 'linear-gradient(155deg, ' + mine.color + ' 0%, var(--peach-soft) 100%)',
+          borderRadius: 28,
+          padding: 24,
+          textAlign: 'center',
+          position: 'relative',
+          overflow: 'hidden',
+          boxShadow: 'var(--shadow-2)',
+        }}>
+          <div style={{ position: 'absolute', top: 12, right: 12, fontSize: 18, fontWeight: 700, color: 'var(--ink-2)' }}>04 / 47</div>
+          <div style={{ fontSize: 120, lineHeight: 1, animation: 'wiggle 3s ease-in-out infinite', display: 'inline-block', transformOrigin: 'center bottom' }}>{mine.animal}</div>
+          <div className="t-display" style={{ fontSize: 38, marginTop: 12, letterSpacing: '-0.02em' }}>{mine.name}</div>
+          <div className="t-serif" style={{ fontSize: 22, color: 'var(--ink-2)', marginTop: 2 }}>"{mine.tag}"</div>
+          <div style={{
+            marginTop: 16, padding: '8px 14px',
+            background: 'rgba(255,255,255,0.6)', borderRadius: 999,
+            display: 'inline-block', backdropFilter: 'blur(10px)',
+            fontSize: 12, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase',
+          }}>since may 2026</div>
+        </div>
+
+        {/* Stats */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginTop: 14 }}>
+          <Stat n="184" label="treats spread" />
+          <Stat n="11" label="lucky friends" />
+          <Stat n="3" label="archetypes unlocked" />
+        </div>
+
+        {/* Evolution hint */}
+        <div className="card" style={{
+          marginTop: 14, padding: 14,
+          background: 'var(--calm)',
+          display: 'flex', alignItems: 'center', gap: 14,
+        }}>
+          <div style={{ fontSize: 32 }}>🌱</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontWeight: 700, fontSize: 14 }}>5 more coffee runs and you'll evolve</div>
+            <div style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 2 }}>→ Coffee Goblin ☕</div>
+          </div>
+        </div>
+
+        <div className="section-title" style={{ marginTop: 22 }}>archetype collection</div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          {others.map((p, i) => (
+            <div key={p.id} className="card" style={{
+              padding: 14,
+              textAlign: 'center',
+              opacity: i < 2 ? 1 : 0.5,
+              position: 'relative',
+            }}>
+              <div style={{ fontSize: 44, filter: i < 2 ? 'none' : 'grayscale(0.7)' }}>{i < 2 ? p.animal : '🔒'}</div>
+              <div style={{ fontWeight: 700, fontSize: 13, marginTop: 6 }}>{i < 2 ? p.name : '???'}</div>
+              <div style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 2 }}>{i < 2 ? p.tag : 'keep spreading vibes'}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ height: 24 }} />
+      </div>
+    </div>
+  );
+}
+
+function Stat({ n, label }) {
+  return (
+    <div className="card" style={{ padding: 12, textAlign: 'center' }}>
+      <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 24 }}>{n}</div>
+      <div style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 2, lineHeight: 1.2 }}>{label}</div>
+    </div>
+  );
+}
+
+// ── Monthly Recap (story-style) ──────────────────────────────
+function RecapScreen({ nav }) {
+  const [slide, setSlide] = React.useState(0);
+  const slides = [
+    {
+      bg: 'linear-gradient(160deg, #FFD66B 0%, #FFB59A 100%)',
+      content: (
+        <>
+          <div className="t-serif" style={{ fontSize: 28, color: 'var(--ink-2)', textAlign: 'center' }}>your may was</div>
+          <div className="t-display" style={{ fontSize: 76, textAlign: 'center', lineHeight: 0.95, marginTop: 4, letterSpacing: '-0.04em' }}>generous.</div>
+          <div style={{ marginTop: 40 }}><Til mood="proud" size={180} /></div>
+        </>
+      ),
+    },
+    {
+      bg: 'linear-gradient(160deg, #C9B8F0 0%, #ECE3FF 100%)',
+      content: (
+        <>
+          <div style={{ fontSize: 92, textAlign: 'center' }}>☕</div>
+          <div className="t-display" style={{ fontSize: 64, textAlign: 'center', lineHeight: 1 }}>42</div>
+          <div className="t-serif" style={{ fontSize: 24, textAlign: 'center', color: 'var(--ink-2)' }}>coffees shared</div>
+          <div style={{ marginTop: 24, textAlign: 'center', fontSize: 14, color: 'var(--ink-2)', maxWidth: 240, lineHeight: 1.4 }}>
+            mostly with Jamie. honestly, that's a Coffee Goblin friendship 💛
+          </div>
+        </>
+      ),
+    },
+    {
+      bg: 'linear-gradient(160deg, #B9E8C6 0%, #DEF5E4 100%)',
+      content: (
+        <>
+          <div className="t-display" style={{ fontSize: 28, textAlign: 'center' }}>everyone showed up</div>
+          <div className="t-serif" style={{ fontSize: 18, textAlign: 'center', color: 'var(--ink-2)', marginTop: 6 }}>in their own way 💛</div>
+          <div style={{ marginTop: 20 }}>
+            {[
+              { who: 'Chris', mood: '🐻', story: 'surprised the group twice this month' },
+              { who: 'You',   mood: '🍪', story: 'kept the small treats flowing all month' },
+              { who: 'Noor',  mood: '🌴', story: 'went big on the Lisbon trip' },
+            ].map((row) => (
+              <div key={row.who} style={{ background: 'rgba(255,255,255,0.5)', borderRadius: 14, padding: 12, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ fontSize: 28 }}>{row.mood}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 700 }}>{row.who}</div>
+                  <div style={{ fontSize: 12, color: 'var(--ink-2)', marginTop: 2 }}>{row.story}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      ),
+    },
+    {
+      bg: 'linear-gradient(160deg, #F49AC2 0%, #FCD9E8 100%)',
+      content: (
+        <>
+          <div style={{ fontSize: 92, textAlign: 'center' }}>🌙</div>
+          <div className="t-display" style={{ fontSize: 32, textAlign: 'center', lineHeight: 1.1 }}>Alex carried late-night<br />survival this month.</div>
+          <div style={{ marginTop: 24, padding: 16, background: 'rgba(255,255,255,0.5)', borderRadius: 18, fontSize: 14, lineHeight: 1.5 }}>
+            4 emergency taxi missions, 2 kebab rescues, and one mysterious "ice cream at 2am" event.
+          </div>
+          <div className="t-serif" style={{ fontSize: 22, textAlign: 'center', marginTop: 18, color: 'var(--ink-2)' }}>a good moment to treat them 🍜</div>
+        </>
+      ),
+    },
+    {
+      bg: 'var(--celebrate)',
+      content: (
+        <>
+          <div className="t-display" style={{ fontSize: 36, textAlign: 'center', lineHeight: 1.1 }}>your may, in one word:</div>
+          <div className="t-serif" style={{ fontSize: 72, textAlign: 'center', marginTop: 16, color: 'var(--ink)' }}>cozy.</div>
+          <div style={{ marginTop: 32, padding: 16, background: 'rgba(255,255,255,0.6)', borderRadius: 18, backdropFilter: 'blur(10px)', textAlign: 'center' }}>
+            <div style={{ fontSize: 14, fontWeight: 600 }}>184 treats spread across 11 friends</div>
+            <div style={{ fontSize: 12, color: 'var(--ink-2)', marginTop: 4 }}>that's a lot of vibes</div>
+          </div>
+          <button style={{
+            marginTop: 28, width: '100%',
+            padding: '16px 22px', borderRadius: 999,
+            border: 'none', background: 'var(--ink)',
+            color: '#FFF8EE', fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: 15,
+            cursor: 'pointer',
+          }}>share my recap →</button>
+        </>
+      ),
+    },
+  ];
+
+  return (
+    <div className="tilt-screen no-tabs" style={{ padding: 0, background: slides[slide].bg, transition: 'background 0.5s' }}>
+      {/* Progress bars */}
+      <div style={{ display: 'flex', gap: 4, padding: '54px 16px 0' }}>
+        {slides.map((_, i) => (
+          <div key={i} style={{ flex: 1, height: 3, background: 'rgba(255,255,255,0.4)', borderRadius: 999, overflow: 'hidden' }}>
+            <div style={{
+              height: '100%',
+              background: 'rgba(42,31,26,0.7)',
+              width: i < slide ? '100%' : i === slide ? '100%' : '0%',
+              transition: 'width 0.4s',
+            }} />
+          </div>
+        ))}
+      </div>
+
+      <div style={{ padding: '8px 20px 0', display: 'flex', justifyContent: 'space-between' }}>
+        <button onClick={() => nav('home')} style={{
+          border: 'none', background: 'rgba(255,255,255,0.5)',
+          width: 36, height: 36, borderRadius: 18, fontSize: 16, cursor: 'pointer',
+          backdropFilter: 'blur(10px)',
+        }}>✕</button>
+        <div className="chip" style={{ background: 'rgba(255,255,255,0.5)', backdropFilter: 'blur(10px)' }}>may 2026 · recap</div>
+      </div>
+
+      <div className="screen-in" key={slide} style={{
+        padding: '40px 28px 100px',
+        display: 'flex', flexDirection: 'column', justifyContent: 'center',
+        minHeight: 500,
+      }}>
+        {slides[slide].content}
+      </div>
+
+      {/* tap zones */}
+      <div onClick={() => setSlide(Math.max(0, slide - 1))} style={{
+        position: 'absolute', top: 80, bottom: 60, left: 0, width: '30%', zIndex: 10,
+      }} />
+      <div onClick={() => setSlide(Math.min(slides.length - 1, slide + 1))} style={{
+        position: 'absolute', top: 80, bottom: 60, right: 0, width: '70%', zIndex: 10,
+      }} />
+    </div>
+  );
+}
+
+// ── Notifications ───────────────────────────────────────────
+function NotificationsScreen({ nav }) {
+  const items = [
+    { id: 1, when: '2h', emoji: '🍝', title: 'Alex spread a treat 🍝', sub: 'you, Jamie & Chris were included' },
+    { id: 2, when: '6h', emoji: '🦝', title: 'Jamie has entered generous goblin mode', sub: '+20s flying in every direction', mascot: true },
+    { id: 3, when: 'yest', emoji: '🌙', title: "the Lisbon crew has been cozy lately ✨", sub: "anyone got treat energy? no pressure", mascot: true },
+    { id: 4, when: 'yest', emoji: '💛', title: 'Sam liked your 3am kebab rescue', sub: '"actually iconic"' },
+    { id: 5, when: '2d', emoji: '🍪', title: "tiny treat dealer in action", sub: 'you spread 7 +10s this week. iconic move' },
+    { id: 6, when: '3d', emoji: '🍕', title: "Balance vibes are returning ✨", sub: 'Roomies group has rebalanced naturally' },
+    { id: 7, when: '5d', emoji: '🍜', title: "Alex has been carrying the group lately 💛", sub: "maybe a small treat their way? Til thinks so", mascot: true },
+  ];
+
+  return (
+    <div className="tilt-screen" style={{ padding: 0 }}>
+      <div style={{ padding: '60px 20px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
+        <button onClick={() => nav('home')} style={{
+          border: 'none', background: 'var(--bg-card)',
+          width: 40, height: 40, borderRadius: 20, fontSize: 18, cursor: 'pointer',
+          boxShadow: 'var(--shadow-1)',
+        }}>←</button>
+        <div className="t-display" style={{ fontSize: 24 }}>whispers</div>
+      </div>
+
+      <div style={{ padding: '0 20px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {items.map(n => (
+          <div key={n.id} className="card" style={{ padding: 14, display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+            <div style={{
+              width: 44, height: 44, flexShrink: 0,
+              borderRadius: n.mascot ? '50% 60% 45% 55% / 55% 45% 60% 50%' : 14,
+              background: n.mascot ? 'var(--peach-soft)' : 'var(--bg)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 22,
+            }}>{n.emoji}</div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontWeight: 700, fontSize: 14, lineHeight: 1.3 }}>{n.title}</div>
+              <div style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 2 }}>{n.sub}</div>
+            </div>
+            <div style={{ fontSize: 11, color: 'var(--ink-3)', flexShrink: 0 }}>{n.when}</div>
+          </div>
+        ))}
+        <div style={{ height: 40 }} />
+      </div>
+    </div>
+  );
+}
+
+// ── Friends list ────────────────────────────────────────────
+function FriendsScreen({ nav }) {
+  return (
+    <div className="tilt-screen" style={{ padding: 0 }}>
+      <div style={{ padding: '60px 20px 12px' }}>
+        <div className="t-display" style={{ fontSize: 36 }}>your people</div>
+        <div className="t-serif" style={{ fontSize: 20, color: 'var(--ink-2)' }}>{FRIENDS.length} fellow generous beings</div>
+      </div>
+      <div style={{ padding: '0 20px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {FRIENDS.map(f => {
+          const state = DEMO_FRIEND_STATES[f.id] || TILT_STATES.BALANCED;
+          const [phrase] = getVibePhrase(state, f.name);
+          const p = findPersonality(f.personality);
+          return (
+            <button key={f.id} onClick={() => nav('friend', f.id)} style={{
+              border: 'none', cursor: 'pointer', textAlign: 'left',
+              background: 'var(--bg-card)', borderRadius: 20, padding: 14,
+              boxShadow: 'var(--shadow-1)',
+              display: 'flex', alignItems: 'center', gap: 12,
+            }}>
+              <FriendAvatar name={f.name} color={f.color} size={48} />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', gap: 6, alignItems: 'baseline', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+                  <span style={{ fontWeight: 700, fontSize: 16 }}>{f.name}</span>
+                  <span style={{ fontSize: 11, color: 'var(--ink-3)', overflow: 'hidden', textOverflow: 'ellipsis' }}>· {p.animal} {p.name}</span>
+                </div>
+                <div style={{ fontSize: 12, color: 'var(--ink-2)', marginTop: 2, fontWeight: 500 }}>{phrase}</div>
+              </div>
+              <div style={{ color: 'var(--ink-3)', fontSize: 16 }}>›</div>
+            </button>
+          );
+        })}
+        <div style={{ height: 40 }} />
+      </div>
+    </div>
+  );
+}
+
+// ── Groups list ─────────────────────────────────────────────
+function GroupsScreen({ nav }) {
+  return (
+    <div className="tilt-screen" style={{ padding: 0 }}>
+      <div style={{ padding: '60px 20px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+        <div>
+          <div className="t-display" style={{ fontSize: 36 }}>your groups</div>
+          <div className="t-serif" style={{ fontSize: 20, color: 'var(--ink-2)' }}>little ecosystems of generosity</div>
+        </div>
+        <button style={{ border: 'none', background: 'var(--ink)', color: '#FFF8EE', width: 40, height: 40, borderRadius: 20, fontSize: 22, cursor: 'pointer' }}>+</button>
+      </div>
+      <div style={{ padding: '0 20px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {GROUPS.map(g => (
+          <button key={g.id} onClick={() => nav('group', g.id)} style={{
+            border: 'none', cursor: 'pointer', textAlign: 'left',
+            background: 'var(--bg-card)', borderRadius: 20, padding: 16,
+            boxShadow: 'var(--shadow-1)',
+            display: 'flex', alignItems: 'center', gap: 14,
+          }}>
+            <div style={{
+              width: 56, height: 56, borderRadius: 18,
+              background: 'var(--warm)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 28,
+            }}>{g.emoji}</div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18 }}>{g.name}</div>
+              <div style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 2 }}>{g.members.length} people · {g.vibe}</div>
+            </div>
+            <div style={{ display: 'flex' }}>
+              {g.members.slice(0, 3).map((id, i) => {
+                const m = findFriend(id);
+                return (
+                  <div key={id} style={{ marginLeft: i === 0 ? 0 : -8, border: '2px solid var(--bg-card)', borderRadius: '50%' }}>
+                    <FriendAvatar name={m.name} color={m.color} size={28} />
+                  </div>
+                );
+              })}
+            </div>
+          </button>
+        ))}
+        <div style={{ height: 40 }} />
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, { PersonalityScreen, RecapScreen, NotificationsScreen, FriendsScreen, GroupsScreen });
+</script>
+
+<script type="text/babel">
+// Tilt — main app + tab bar + navigation
+
+function TabBar({ active, nav, openLog }) {
+  const tabs = [
+    { id: 'home',         glyph: '🏠', label: 'home' },
+    { id: 'friends',      glyph: '👯', label: 'friends' },
+    { id: 'log',          glyph: '+',  label: '', fab: true },
+    { id: 'personality',  glyph: '🐹', label: 'you' },
+    { id: 'recap',        glyph: '✨', label: 'recap' },
+  ];
+  return (
+    <div className="tab-bar">
+      {tabs.map(t => {
+        if (t.fab) {
+          return (
+            <button key={t.id} onClick={openLog} className="tab-item fab" aria-label="log a treat">
+              <span className="glyph">{t.glyph}</span>
+            </button>
+          );
+        }
+        return (
+          <button key={t.id} onClick={() => nav(t.id)} className={'tab-item' + (active === t.id ? ' active' : '')}>
+            <span className="glyph" style={{
+              filter: active === t.id ? 'none' : 'grayscale(0.6)',
+              transform: active === t.id ? 'scale(1.1)' : 'scale(1)',
+              transition: 'all 0.2s cubic-bezier(.34,1.56,.64,1)',
+            }}>{t.glyph}</span>
+            <span>{t.label}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "palette": "peach",
+  "tone": "soft",
+  "density": "cozy",
+  "startScreen": "home"
+}/*EDITMODE-END*/;
+
+function App() {
+  // simulate: skip onboarding by default since user wants to see the app
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const [route, setRoute] = React.useState({ screen: t.startScreen || 'home', param: null });
+  const [showLog, setShowLog] = React.useState(false);
+  const [showOnboarding, setShowOnboarding] = React.useState(false);
+
+  // Sync palette to CSS
+  React.useEffect(() => {
+    const root = document.documentElement;
+    const palettes = {
+      peach:    { primary: '#F08562', soft: '#FFE3D4', bg: '#FAF4EC' },
+      lavender: { primary: '#8B6FD9', soft: '#ECE3FF', bg: '#F5F1FA' },
+      mint:     { primary: '#4FB077', soft: '#DEF5E4', bg: '#F0F7F2' },
+      berry:    { primary: '#D9568F', soft: '#FCD9E8', bg: '#FAF1F5' },
+      sunshine: { primary: '#E8A93B', soft: '#FFF1C9', bg: '#FAF6E8' },
+    };
+    const p = palettes[t.palette] || palettes.peach;
+    root.style.setProperty('--peach-deep', p.primary);
+    root.style.setProperty('--peach-soft', p.soft);
+    root.style.setProperty('--bg', p.bg);
+  }, [t.palette]);
+
+  const nav = (screen, param = null) => {
+    if (screen === 'log') { setShowLog(true); return; }
+    setRoute({ screen, param });
+  };
+
+  const screens = {
+    home:        <Home nav={nav} tone={t.tone} />,
+    friends:     <FriendsScreen nav={nav} />,
+    friend:      <FriendDetail friendId={route.param || 'alex'} nav={nav} />,
+    groups:      <GroupsScreen nav={nav} />,
+    group:       <GroupDetail groupId={route.param || 'roomies'} nav={nav} />,
+    mascot:      <MascotScreen nav={nav} />,
+    personality: <PersonalityScreen nav={nav} />,
+    recap:       <RecapScreen nav={nav} />,
+    notifications: <NotificationsScreen nav={nav} />,
+  };
+
+  // Determine if current screen should show the tab bar
+  const screensWithTabs = ['home', 'friends', 'personality', 'groups'];
+  const showTabs = screensWithTabs.includes(route.screen);
+
+  // Active tab mapping
+  const tabMap = { home: 'home', friends: 'friends', personality: 'personality', recap: 'recap' };
+  const activeTab = tabMap[route.screen] || 'home';
+
+  return (
+    <>
+      {showOnboarding && <Onboarding onDone={() => setShowOnboarding(false)} tone={t.tone} />}
+      {!showOnboarding && (
+        <>
+          <div key={route.screen + route.param} className="screen-in" style={{ width: '100%', height: '100%' }}>
+            {screens[route.screen] || screens.home}
+          </div>
+          {showTabs && !showLog && <TabBar active={activeTab} nav={nav} openLog={() => setShowLog(true)} />}
+          {/* Log treat overlay */}
+          {showLog && (
+            <div style={{
+              position: 'absolute', inset: 0, zIndex: 100,
+              animation: 'screen-fade 0.32s cubic-bezier(.2,.8,.2,1)',
+            }}>
+              <LogTreat onClose={() => setShowLog(false)} />
+            </div>
+          )}
+        </>
+      )}
+
+      <TiltTweaks t={t} setTweak={setTweak} restart={() => setShowOnboarding(true)} nav={nav} />
+    </>
+  );
+}
+
+function TiltTweaks({ t, setTweak, restart, nav }) {
+  return (
+    <TweaksPanel title="Tweaks">
+      <TweakSection label="palette">
+        <TweakColor
+          label="theme"
+          value={t.palette}
+          options={[
+            ['#F08562','#FFE3D4','#FAF4EC'],
+            ['#8B6FD9','#ECE3FF','#F5F1FA'],
+            ['#4FB077','#DEF5E4','#F0F7F2'],
+            ['#D9568F','#FCD9E8','#FAF1F5'],
+            ['#E8A93B','#FFF1C9','#FAF6E8'],
+          ]}
+          onChange={(v) => {
+            // Map array back to name
+            const map = { '#F08562': 'peach', '#8B6FD9': 'lavender', '#4FB077': 'mint', '#D9568F': 'berry', '#E8A93B': 'sunshine' };
+            setTweak('palette', map[v[0]] || 'peach');
+          }} />
+      </TweakSection>
+      <TweakSection label="copy tone">
+        <TweakSelect
+          label="how Til talks"
+          value={t.tone}
+          options={[
+            { value: 'soft',    label: 'soft & sweet' },
+            { value: 'goblin',  label: 'goblin chaos' },
+            { value: 'zen',     label: 'zen monk' },
+          ]}
+          onChange={(v) => setTweak('tone', v)} />
+      </TweakSection>
+      <TweakSection label="density">
+        <TweakRadio
+          label="spacing"
+          value={t.density}
+          options={[{value:'cozy', label:'cozy'}, {value:'compact', label:'compact'}]}
+          onChange={(v) => setTweak('density', v)} />
+      </TweakSection>
+      <TweakSection label="jump to screen">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+          {[
+            ['home', 'home'],
+            ['friends', 'friends'],
+            ['groups', 'groups'],
+            ['mascot', 'mascot'],
+            ['personality', 'archetype'],
+            ['recap', 'recap'],
+            ['notifications', 'whispers'],
+          ].map(([id, label]) => (
+            <button key={id} onClick={() => nav(id)} style={{
+              border: 'none', cursor: 'pointer',
+              padding: '8px 10px', borderRadius: 10,
+              background: '#1a1a1a', color: '#eee',
+              fontSize: 12, fontFamily: 'inherit',
+            }}>{label}</button>
+          ))}
+        </div>
+        <div style={{ height: 6 }} />
+        <TweakButton label="replay onboarding" onClick={restart} />
+      </TweakSection>
+    </TweaksPanel>
+  );
+}
+
+Object.assign(window, { App, TabBar });
+</script>
+
+<script type="text/babel">
+  function Root() {
+    return (
+      <IOSDevice width={402} height={874}>
+        <App />
+      </IOSDevice>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(<Root />);
+</script>
+
+</body>
+</html>
