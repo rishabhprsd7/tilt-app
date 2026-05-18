@@ -6,6 +6,14 @@ function LogTreat({ onClose, onLog, tone }) {
   const [note, setNote] = React.useState('');
   const [selected, setSelected] = React.useState(['alex', 'jamie']);
   const [showCelebrate, setShowCelebrate] = React.useState(false);
+  const levelRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (!levelRef.current) return;
+    const idx = TREAT_LEVELS.indexOf(level);
+    const btn = levelRef.current.children[idx];
+    if (btn) btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }, [level]);
 
   const toggleFriend = (id) => {
     setSelected(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
@@ -58,19 +66,33 @@ function LogTreat({ onClose, onLog, tone }) {
           <div className="t-serif" style={{ fontSize: 18, color: 'var(--ink-2)', marginTop: 4 }}>treat units, vibes only</div>
         </div>
 
-        {/* Treat level picker */}
+        {/* Treat level picker — horizontal snap scroll */}
         <div className="section-title" style={{ marginTop: 16 }}>treat level</div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-          {TREAT_LEVELS.map(v => (
-            <button key={v} onClick={() => setLevel(v)} className="treat-pill" style={{
-              background: level === v ? 'var(--ink)' : 'var(--bg-card)',
-              color: level === v ? '#FFF8EE' : 'var(--ink)',
-              border: 'none', cursor: 'pointer',
-              boxShadow: level === v ? 'var(--shadow-pop)' : 'var(--shadow-1)',
-              transform: level === v ? 'scale(1.05)' : 'scale(1)',
-              transition: 'all 0.2s cubic-bezier(.34,1.56,.64,1)',
-            }}>+{v}</button>
-          ))}
+        <div style={{ position: 'relative' }}>
+          <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 32, background: 'linear-gradient(90deg, var(--bg) 40%, transparent)', zIndex: 1, pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: 32, background: 'linear-gradient(270deg, var(--bg) 40%, transparent)', zIndex: 1, pointerEvents: 'none' }} />
+          <div ref={levelRef} style={{
+            display: 'flex', gap: 8,
+            overflowX: 'auto', scrollSnapType: 'x mandatory',
+            paddingBottom: 4, paddingLeft: 4, paddingRight: 4,
+            scrollbarWidth: 'none', msOverflowStyle: 'none',
+          }}>
+            {TREAT_LEVELS.map(v => (
+              <button key={v} onClick={() => setLevel(v)} className="treat-pill" style={{
+                scrollSnapAlign: 'center',
+                flexShrink: 0,
+                background: level === v ? 'var(--ink)' : 'var(--bg-card)',
+                color: level === v ? '#FFF8EE' : 'var(--ink)',
+                border: 'none', cursor: 'pointer',
+                boxShadow: level === v ? 'var(--shadow-pop)' : 'var(--shadow-1)',
+                transform: level === v ? 'scale(1.1)' : 'scale(1)',
+                opacity: level === v ? 1 : 0.65,
+                fontSize: level === v ? 15 : 14,
+                fontWeight: level === v ? 800 : 600,
+                transition: 'all 0.2s cubic-bezier(.34,1.56,.64,1)',
+              }}>+{v}</button>
+            ))}
+          </div>
         </div>
 
         {/* Emoji picker */}
